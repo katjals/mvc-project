@@ -9,6 +9,11 @@ function call($controller, $action){
         case 'pages':
             $controller = new PagesController();
             break;
+        case 'posts':
+            // we need the model to query the database later in the controller
+            require_once('models/post.php');
+            $controller = new PostsController();
+            break;
     }
     
     // call the action
@@ -17,7 +22,8 @@ function call($controller, $action){
 
 // a list of the controllers and their actions
 // we consider those "allowed" values
-$controllers = array('pages' => ['home', 'error']);
+$controllers = array('pages' => ['home', 'error'],
+                     'posts' => ['index', 'show']);
 
 // check that the requested controller and action are both allowed
 // if someone tries to access something else he will be redirected to the error action of the page

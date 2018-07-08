@@ -5,9 +5,7 @@ class Db {
     
     private function __construct(){}
     
-    private function __clone() {
-        // TODO: Implement __clone() method.
-    }
+    private function __clone() {}
     
     public static function getInstance() {
         if (!isset(self::$instance)) {
@@ -15,5 +13,6 @@ class Db {
             self::$instance = new PDO('mysql:host=localhost;dbname=php_mvc',
                 'root', '', $pdo_options);
         }
+        return self::$instance;
     }
 }

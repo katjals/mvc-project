@@ -3,7 +3,7 @@
 class PagesController {
     public function home() {
         $first_name = 'Jon';
-        $las_name = 'Snow';
+        $last_name = 'Snow';
         require_once('views/pages/home.php');
     }
     
