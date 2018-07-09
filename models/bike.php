@@ -39,7 +39,7 @@ class Bike {
         $req = $db->prepare('SELECT * FROM bike WHERE id = :id');
         // the query was prepared, now we replace :id with our actual $id value
         $req->execute(array('id' => $id));
-        $post = $req->fetch();
+        $bike = $req->fetch();
         
         return new Bike($bike['id'], $bike['title'], $bike['description'], $bike['price']);
     }

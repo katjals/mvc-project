@@ -3,7 +3,7 @@
 class BikesController {
     public function index() {
         // we store all the posts in a variable
-        $posts = Bike::all();
+        $bikes = Bike::all();
         require_once('views/bikes/index.php');
     }
     
@@ -14,7 +14,7 @@ class BikesController {
             return call('pages', 'error');
         
         // we use the given id to get the right post
-        $post = Post::find($_GET['id']);
+        $bike = Bike::find($_GET['id']);
         require_once('views/bikes/show.php');
     }
 }
