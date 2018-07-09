@@ -29,7 +29,7 @@ class Post {
         return $list;
     }
     
-    public static  function find($id){
+    public static function find($id){
         $db = Db::getInstance();
         // we make sure $id is an integer
         $id = intval($id);
