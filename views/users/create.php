@@ -4,14 +4,6 @@
 </head>
 <body>
 
-<?php
-
-if (isset($createdUser)){
-    echo "<script type='text/javascript'>alert('Highfive! Du er oprettet');</script>";
-}
-
-?>
-
 <form method="post" action="?controller=users&action=create">
     <div class="container">
         <h1>Opret en bruger</h1>
