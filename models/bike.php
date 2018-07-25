@@ -2,8 +2,6 @@
 
 class Bike {
     
-    // we define 3 attributes
-    // they are public so that we can access them using $post->author directly
     public $id;
     
     public $title;
@@ -12,21 +10,24 @@ class Bike {
     
     public $price;
     
-    public function __construct($id, $title, $description, $price){
+    public $postalCode;
+    
+    public function __construct($title, $description, $price, $postalCode, $id = null){
         $this->id = $id;
         $this->title = $title;
         $this->description = $description;
         $this->price = $price;
+        $this->postalCode = $postalCode;
     }
     
     public static function all() {
         $list = [];
         $db = Db::getInstance();
-        $req = $db->query('SELECT * FROM bike');
+        $req = $db->query('SELECT * FROM bike ORDER BY postalCode');
         
         // we create a list of Post objects from the db result
         foreach($req->fetchAll() as $bike){
-            $list[] = new Bike($bike['id'], $bike['title'], $bike['description'], $bike['price']);
+            $list[] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
         }
         
         return $list;
@@ -41,6 +42,21 @@ class Bike {
         $req->execute(array('id' => $id));
         $bike = $req->fetch();
         
-        return new Bike($bike['id'], $bike['title'], $bike['description'], $bike['price']);
+        return new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
+    }
+    
+    public static function register($title, $description, $price, $postalCode){
+        $db = Db::getInstance();
+        
+        $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode)
+                                      VALUES(:title, :description, :price, :postalCode)');
+        // the query was prepared, now we replace :id with our actual $id value
+        $req->execute(array(
+            'title' => $title,
+            'description' => $description,
+            'price' => $price,
+            'postalCode' => $postalCode));
+        
+        return true;
     }
 }

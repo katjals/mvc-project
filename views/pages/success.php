@@ -4,12 +4,10 @@
 <body>
 
 <div class="container">
-  <p>Ooop, this is the error page.</p>
+  <p> YAAAS !</p>
   
-  <p>Looks like something went wrong.</p>
+  <p>Det lykkedes, <?php echo $name; ?>!</p>
 </div>
 
 </body>
 </html>
-
-
