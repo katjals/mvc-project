@@ -3,7 +3,9 @@
 class BikesController {
     public function index() {
         // we store all the posts in a variable
-        $bikes = Bike::all();
+        $unsortedBikes = Bike::all();
+        $bikes = $this->sortByUserPostalCode($unsortedBikes);
+        $postalCode = $this->getPostalCodeOfUser();
         require_once(dirname(__DIR__).'/views/bikes/index.php');
     }
     
@@ -47,10 +49,21 @@ class BikesController {
     
     public function getPostalCodeOfUser(){
         # the postal code of the user, to be used to get bikes
-        $opts = array('http'=>array('method'=>"GET", 'header'=>"User-Agent: mybot.v0.7.1"));
-        $context = stream_context_create($opts);
+        return file_get_contents('https://ipapi.co/postal/', false);
+    }
     
-        return file_get_contents('https://ipapi.co/postal/', false, $context);
+    public function sortByUserPostalCode($bikes){
+        usort($bikes, function($a, $b){
+            $postalCode = $this->getPostalCodeOfUser();
+            if ($a->postalCode == $b->postalCode){
+                return 0;
+            } elseif (abs($postalCode - $a->postalCode) > abs($postalCode - $b->postalCode)){
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        return $bikes;
     }
     
     function testInput($data) {

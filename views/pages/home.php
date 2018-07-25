@@ -1,14 +1,23 @@
-<p> Hello there!</p>
+<html lang="en">
+<head>
+</head>
+<body>
 
-<p>You succesfully landed on the home page. Congrats!</p>
+  <div class="container">
+    <h1>Forside</h1>
+  
+    <p>Tillykke - Du er landet på forsiden!</p>
+  
+    <p><a href="?controller=users&action=createUserForm">Opret en bruger</a> eller <a href="?controller=users&action=loginPage">login</a>.</p>
+  </div>
 
-<p>Register an account or login.</p>
-<p>If you want to.</p>
+</body>
+</html>
+
+
 
 <?php
-
-
-//# the postal code of the user, to be used to get bikes
+# the postal code of the user, to be used to get bikes
 //$opts = array('http'=>array('method'=>"GET", 'header'=>"User-Agent: mybot.v0.7.1"));
 //$context = stream_context_create($opts);
 //

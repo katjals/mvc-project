@@ -1,3 +1,13 @@
-<p> YAAAS !</p>
+<html lang="en">
+<head>
+</head>
+<body>
 
-<p>You succesfully made it, <?php echo $name; ?>!</p>
+<div class="container">
+  <p> YAAAS !</p>
+  
+  <p>Det lykkedes, <?php echo $name; ?>!</p>
+</div>
+
+</body>
+</html>
