@@ -36,7 +36,6 @@ class User {
         
         $req = $db->prepare('INSERT INTO user(name, password, phoneNumber, email)
                                       VALUES(:name, :password, :phoneNumber, :email)');
-        // the query was prepared, now we replace :id with our actual $id value
         $req->execute(array(
             'name' => $name,
             'password' => $password,

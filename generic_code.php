@@ -2,7 +2,15 @@
 
 class GenericCode {
     
-    public function testInput($data){
+    
+    /**
+     * GenericCode constructor.
+     */
+    private function __construct()
+    {
+    }
+    
+    public static function testInput($data){
         $data = trim($data);
         $data = stripslashes($data);
         $data = htmlspecialchars($data);

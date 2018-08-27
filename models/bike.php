@@ -25,7 +25,7 @@ class Bike {
         $db = Db::getInstance();
         $req = $db->query('SELECT * FROM bike ORDER BY postalCode');
         
-        // we create a list of Post objects from the db result
+        // we create a list of Bike objects from the db result
         foreach($req->fetchAll() as $bike){
             $list[] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
         }
@@ -50,7 +50,6 @@ class Bike {
         
         $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode)
                                       VALUES(:title, :description, :price, :postalCode)');
-        // the query was prepared, now we replace :id with our actual $id value
         $req->execute(array(
             'title' => $title,
             'description' => $description,

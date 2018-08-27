@@ -1,8 +1,9 @@
 <?php
 
 class BikesController {
+    
     public function index() {
-        // we store all the posts in a variable
+        // we store all the bikes in a variable
         $unsortedBikes = Bike::all();
         $bikes = $this->sortByUserPostalCode($unsortedBikes);
         $postalCode = $this->getPostalCodeOfUser();
@@ -10,13 +11,13 @@ class BikesController {
     }
     
     public function show(){
-        // we expect a url of form ?controller=posts&actions=show&id=x
-        // without an id we just redirect to the error page as we need the post id to find it in the db
+        // we expect a url of form ?controller=bikess&actions=show&id=x
+        // without an id we just redirect to the error page as we need the bike id to find it in the db
         if (!isset($_GET['id'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
         }
         
-        // we use the given id to get the right post
+        // we use the given id to get the right bike
         $bike = Bike::find($_GET['id']);
         require_once(dirname(__DIR__).'/views/bikes/show.php');
     }
@@ -26,18 +27,15 @@ class BikesController {
     }
     
     public function register(){
-        // we expect a url of form ?controller=posts&actions=show&id=x
-        // without an id we just redirect to the error page as we need the post id to find it in the db
         if (!isset($_POST['title']) || !isset($_POST['description']) || !isset($_POST['price']) || !isset($_POST['postalCode'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
         }
         
-        $title = $this->testInput($_POST["title"]);
-        $description = $this->testInput($_POST["description"]);
-        $price = $this->testInput($_POST["price"]);
-        $postalCode = $this->testInput($_POST["postalCode"]);
+        $title = GenericCode::testInput($_POST["title"]);
+        $description = GenericCode::testInput($_POST["description"]);
+        $price = GenericCode::testInput($_POST["price"]);
+        $postalCode = GenericCode::testInput($_POST["postalCode"]);
         
-        // we use the given id to get the right post
         $registeredBike = Bike::register($title, $description, $price, $postalCode);
         if ($registeredBike){
             $name = $title;
@@ -48,7 +46,6 @@ class BikesController {
     }
     
     public function getPostalCodeOfUser(){
-        # the postal code of the user, to be used to get bikes
         return file_get_contents('https://ipapi.co/postal/', false);
     }
     
@@ -66,9 +63,4 @@ class BikesController {
         return $bikes;
     }
     
-    function testInput($data) {
-        $genericController = new GenericCode();
-        $genericController->testInput($data);
-        return $data;
-    }
 }

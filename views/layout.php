@@ -1,3 +1,13 @@
+<?php
+
+$nav = "";
+if (isset($_SESSION['username'])){
+    $nav = "logged_in.php";
+} else {
+  $nav  = "default_nav.php";
+}
+?>
+
 <html>
 <head>
   <title>Lej en ladcykel</title>
@@ -7,16 +17,16 @@
 </head>
 <body>
 <header>
-  <div class="navbar">
-    <a href="/../../Hobby-projekt/mvc-project/">Hjem</a>
-    <a href="?controller=users&action=loginPage">Login</a>
-    <a href="?controller=users&action=createUserForm">Opret Bruger</a>
-    <a href="?controller=bikes&action=registerBikeForm">Registrer cykel</a>
-    <a href="?controller=bikes&action=index">Cykler til leje</a>
-  </div>
 </header>
 
-<?php require_once(dirname(__DIR__).'/routes.php') ?>
+<?php
+// navigation bar
+require(dirname(__DIR__).'/views/pages/'.$nav);
+
+// direct to the correct page
+require_once(dirname(__DIR__).'/routes.php')
+
+?>
 
 <footer>
 
