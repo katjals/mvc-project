@@ -30,29 +30,42 @@ class User {
     }
     
     public static function create($name, $password, $phoneNumber, $email){
-        $db = Db::getInstance();
-    
-//        $hash = password_hash($password, PASSWORD_DEFAULT);
         
-        $req = $db->prepare('INSERT INTO user(name, password, phoneNumber, email)
-                                      VALUES(:name, :password, :phoneNumber, :email)');
-        $req->execute(array(
-            'name' => $name,
-            'password' => $password,
-            'phoneNumber' => $phoneNumber,
-            'email' => $email));
+        try {
+            $db = Db::getInstance();
     
-        return true;
+            $req = $db->prepare('INSERT INTO user(name, password, phoneNumber, email)
+                                      VALUES(:name, :password, :phoneNumber, :email)');
+            $req->execute(array(
+                'name' => $name,
+                'password' => $password,
+                'phoneNumber' => $phoneNumber,
+                'email' => $email));
+    
+            return true;
+            
+        } catch (Exception $e){
+            throw new Exception("DB error when creating ".$name);
+        }
+        
+        
+        
     }
     
     public static function login($email){
-        $db = Db::getInstance();
         
-        $req = $db->prepare('SELECT password,name FROM user WHERE email = :email');
-        $req->execute(array('email' => $email));
-        $user = $req->fetch();
+        try {
+            $db = Db::getInstance();
     
-        return $user;
+            $req = $db->prepare('SELECT password,name FROM user WHERE email = :email');
+            $req->execute(array('email' => $email));
+            $user = $req->fetch();
+    
+            return $user;
+        } catch (Exception $e){
+            throw new Exception("DB error caused by login of user with email: ".$email);
+        }
+       
     }
     
 }

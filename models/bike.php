@@ -22,40 +22,60 @@ class Bike {
     
     public static function all() {
         $list = [];
-        $db = Db::getInstance();
-        $req = $db->query('SELECT * FROM bike ORDER BY postalCode');
         
-        // we create a list of Bike objects from the db result
-        foreach($req->fetchAll() as $bike){
-            $list[] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
+        try {
+            $db = Db::getInstance();
+            $req = $db->query('SELECT * FROM bike ORDER BY postalCode');
+    
+            // we create a list of Bike objects from the db result
+            foreach($req->fetchAll() as $bike){
+                $list[] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
+            }
+    
+            return $list;
+            
+        } catch (Exception $e){
+            throw new Exception("DB error when fetching all bikes");
         }
         
-        return $list;
     }
     
     public static  function find($id){
-        $db = Db::getInstance();
-        // we make sure $id is an integer
-        $id = intval($id);
-        $req = $db->prepare('SELECT * FROM bike WHERE id = :id');
-        // the query was prepared, now we replace :id with our actual $id value
-        $req->execute(array('id' => $id));
-        $bike = $req->fetch();
         
-        return new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
+        try {
+            $db = Db::getInstance();
+            // we make sure $id is an integer
+            $id = intval($id);
+            $req = $db->prepare('SELECT * FROM bike WHERE id = :id');
+            // the query was prepared, now we replace :id with our actual $id value
+            $req->execute(array('id' => $id));
+            $bike = $req->fetch();
+    
+            return new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
+    
+        } catch (Exception $e) {
+            throw new Exception("DB error when finding bike with id: ".$id);
+        }
     }
     
     public static function register($title, $description, $price, $postalCode){
-        $db = Db::getInstance();
         
-        $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode)
+        try {
+            $db = Db::getInstance();
+    
+            $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode)
                                       VALUES(:title, :description, :price, :postalCode)');
-        $req->execute(array(
-            'title' => $title,
-            'description' => $description,
-            'price' => $price,
-            'postalCode' => $postalCode));
+            $req->execute(array(
+                'title' => $title,
+                'description' => $description,
+                'price' => $price,
+                'postalCode' => $postalCode));
+    
+            return true;
+            
+        } catch (Exception $e){
+            throw new Exception("DB error when creating new bike");
+        }
         
-        return true;
     }
 }
