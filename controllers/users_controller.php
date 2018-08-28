@@ -41,8 +41,9 @@ class UsersController {
                 $psw = $user['password'];
     
                 if ($password == $psw){
-                    require_once(dirname(__DIR__).'/views/pages/success.php');
+                    // creates session and returns to index.php. Location will remove the get value, hence index redirect to home page
                     $_SESSION['username'] = $name;
+                    header( "Location: index.php" );
                 } else {
                     require_once(dirname(__DIR__).'/views/pages/error.php');
                 }
@@ -52,8 +53,12 @@ class UsersController {
     
     public function logout()
     {
-        session_destroy();
-        require_once(dirname(__DIR__).'/views/pages/home.php');
+        if ($_GET['action'] === 'logout' ){
+            session_destroy();
+            // returns to index.php. Location will remove the get value, hence index redirect to home page
+            header( "Location: index.php" );
+        }
+        
     }
     
 }

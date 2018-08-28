@@ -6,9 +6,8 @@
   <div class="container">
     <h1>Forside</h1>
   
-    <p>Tillykke - Du er landet på forsiden!</p>
   
-    <p><a href="?controller=users&action=createUserForm">Opret en bruger</a> eller <a href="?controller=users&action=loginPage">login</a>.</p>
+    <p>Inspirerende tekst der giver dig lyst til at gå i gang med at bruge sidens spændende funktionalitet.</p>
   </div>
 
 </body>

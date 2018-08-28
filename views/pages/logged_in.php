@@ -9,3 +9,6 @@
         <a href="?controller=bikes&action=index">Cykler til leje</a>
     </div>
 </header>
+</body>
+</html>
+
