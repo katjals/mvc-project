@@ -12,7 +12,7 @@ class Db {
             
             try {
                 $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-                self::$instance = new PDO('mysql:host=localhost;dbname=hobby_projects',
+                self::$instance = new PDO('mysql:host=localhost;dbname=hobby_project',
                     'root', '', $pdo_options);
                 
             } catch (PDOException $e){
