@@ -13,26 +13,27 @@ class UsersController {
     public function create(){
         if (!isset($_POST['name']) || !isset($_POST['password']) || !isset($_POST['phoneNumber']) || !isset($_POST['email'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
-        }
         
-        $name = GenericCode::testInput($_POST["name"]);
-        $phoneNumber = GenericCode::testInput($_POST["phoneNumber"]);
-        $email = GenericCode::testInput($_POST["email"]);
-        $password = GenericCode::testInput($_POST["password"]);
-    
-        $createdUser = User::create($name, $password, $phoneNumber, $email);
-        if ($createdUser){
-            require_once(dirname(__DIR__).'/views/pages/success.php');
         } else {
-            require_once(dirname(__DIR__).'/views/pages/error.php');
+            $name = GenericCode::stripHtmlCharacters($_POST["name"]);
+            $phoneNumber = GenericCode::stripHtmlCharacters($_POST["phoneNumber"]);
+            $email = GenericCode::stripHtmlCharacters($_POST["email"]);
+            $password = GenericCode::stripHtmlCharacters($_POST["password"]);
+    
+            $createdUser = User::create($name, $password, $phoneNumber, $email);
+            if ($createdUser){
+                require_once(dirname(__DIR__).'/views/pages/success.php');
+            } else {
+                require_once(dirname(__DIR__).'/views/pages/error.php');
+            }
         }
     }
     
     public function login()
     {
         if (isset($_POST['email']) && isset($_POST['psw'])) {
-            $email = GenericCode::testInput($_POST["email"]);
-            $password = GenericCode::testInput($_POST["psw"]);
+            $email = GenericCode::stripHtmlCharacters($_POST["email"]);
+            $password = GenericCode::stripHtmlCharacters($_POST["psw"]);
     
             $user = User::login($email);
             
@@ -59,6 +60,17 @@ class UsersController {
             header( "Location: index.php" );
         }
         
+    }
+    
+    /**
+     * @param $userId
+     * @return User
+     */
+    public static function getContactInfo($userId){
+        include_once(dirname(__DIR__).'/models/user.php');
+    
+        $user = User::getContactInfo($userId);
+        return $user;
     }
     
 }

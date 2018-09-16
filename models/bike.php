@@ -20,12 +20,12 @@ class Bike {
         $this->postalCode = $postalCode;
     }
     
-    public static function all() {
+    public static function getAllNonBooked() {
         $list = [];
         
         try {
             $db = Db::getInstance();
-            $req = $db->query('SELECT * FROM bike ORDER BY postalCode');
+            $req = $db->query('SELECT * FROM bike WHERE is_booked = FALSE ORDER BY postalCode');
     
             // we create a list of Bike objects from the db result
             foreach($req->fetchAll() as $bike){
@@ -40,7 +40,7 @@ class Bike {
         
     }
     
-    public static  function find($id){
+    public static function getOne($id){
         
         try {
             $db = Db::getInstance();
@@ -77,5 +77,20 @@ class Bike {
             throw new Exception("DB error when creating new bike");
         }
         
+    }
+    
+    public static function book($id){
+        
+        try {
+            $db = Db::getInstance();
+            $req = $db->prepare('UPDATE bike SET is_booked = TRUE WHERE id = :id');
+            // the query was prepared, now we replace :id with our actual $id value
+            $req->execute(array('id' => $id));
+    
+            return true;
+    
+        } catch (Exception $e){
+            throw new Exception("DB error when creating new bike");
+        }
     }
 }

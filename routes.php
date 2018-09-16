@@ -28,7 +28,7 @@ function call($controller, $action){
 // a list of the controllers and their actions
 // we consider those "allowed" values
 $controllers = array('pages' => ['home', 'error'],
-                     'bikes' => ['index', 'show', 'registerBikeForm', 'register'],
+                     'bikes' => ['index', 'show', 'registerBikeForm', 'register', 'book'],
                      'users' => ['createUserForm', 'create', 'loginPage', 'login', 'logout']);
 
 // check that the requested controller and action are both allowed

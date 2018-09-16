@@ -1,6 +1,7 @@
 <?php
 
-class User {
+class User
+{
     
     public $id;
     
@@ -14,26 +15,21 @@ class User {
     
     /**
      * User constructor.
-     * @param $id
      * @param $name
-     * @param $password
      * @param $phoneNumber
-     * @param $email
      */
-    public function __construct($name, $password, $phoneNumber = null, $email = null, $id = null)
+    public function __construct($name, $phoneNumber)
     {
-        $this->id = $id;
         $this->name = $name;
-        $this->password = $password;
         $this->phoneNumber = $phoneNumber;
-        $this->email = $email;
     }
     
-    public static function create($name, $password, $phoneNumber, $email){
+    public static function create($name, $password, $phoneNumber, $email)
+    {
         
         try {
             $db = Db::getInstance();
-    
+            
             $req = $db->prepare('INSERT INTO user(name, password, phoneNumber, email)
                                       VALUES(:name, :password, :phoneNumber, :email)');
             $req->execute(array(
@@ -41,31 +37,46 @@ class User {
                 'password' => $password,
                 'phoneNumber' => $phoneNumber,
                 'email' => $email));
-    
+            
             return true;
             
-        } catch (Exception $e){
-            throw new Exception("DB error when creating ".$name);
+        } catch (Exception $e) {
+            throw new Exception("DB error when creating " . $name);
         }
-        
-        
-        
     }
     
-    public static function login($email){
+    public static function login($email)
+    {
         
         try {
             $db = Db::getInstance();
-    
+            
             $req = $db->prepare('SELECT password,name FROM user WHERE email = :email');
             $req->execute(array('email' => $email));
             $user = $req->fetch();
-    
+            
             return $user;
-        } catch (Exception $e){
-            throw new Exception("DB error caused by login of user with email: ".$email);
+        } catch (Exception $e) {
+            throw new Exception("DB error caused by login of user with email: " . $email);
         }
-       
     }
     
+    public static function getContactInfo($userId)
+    {
+        
+        try {
+            $db = Db::getInstance();
+            // we make sure $id is an integer
+            $id = intval($userId);
+            $req = $db->prepare('SELECT name,phoneNumber FROM user WHERE id = :id');
+            // the query was prepared, now we replace :id with our actual $id value
+            $req->execute(array('id' => $userId));
+            $user = $req->fetch();
+            
+            return new User($user['name'], $user['phoneNumber']);
+            
+        } catch (Exception $e) {
+            throw new Exception("DB error when finding bike with id: " . $userId);
+        }
+    }
 }

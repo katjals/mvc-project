@@ -10,11 +10,19 @@ class GenericCode {
     {
     }
     
-    public static function testInput($data){
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
+    /**
+     * @param $string
+     * @return string
+     */
+    public static function stripHtmlCharacters($string){
+        $string = trim($string);
+        $string = stripslashes($string);
+        $string = htmlspecialchars($string);
+        return $string;
     }
     
+    // TODO
+    public static function stripSql(){
+    
+    }
 }
