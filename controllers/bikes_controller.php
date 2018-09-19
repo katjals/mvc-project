@@ -64,11 +64,11 @@ class BikesController {
             require_once(dirname(__DIR__).'/views/pages/error.php');
             
         } else {
-            // we use the given id to get the right bike
-            $userId = Bike::book($_POST['id']);
-            if ($userId){
+            $isBooked = Bike::book($_POST['id']);
+            if ($isBooked){
                 //include 'users_controller.php';
                // $user = UsersController::getContactInfo($userId);
+                $userId = Bike::getOwnerId($_POST['id']);
                 include dirname(__DIR__).'/models/user.php';
                 $user = User::getContactInfo($userId);
            //     $user2 = $usersController->getContactInfo($userId);

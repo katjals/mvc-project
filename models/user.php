@@ -70,7 +70,7 @@ class User
             $id = intval($userId);
             $req = $db->prepare('SELECT name,phoneNumber FROM user WHERE id = :id');
             // the query was prepared, now we replace :id with our actual $id value
-            $req->execute(array('id' => $userId));
+            $req->execute(array('id' => (int)$userId));
             $user = $req->fetch();
             
             return new User($user['name'], $user['phoneNumber']);

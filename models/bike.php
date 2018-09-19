@@ -93,4 +93,21 @@ class Bike {
             throw new Exception("DB error when creating new bike");
         }
     }
+    
+    public static function getOwnerId($bikeId){
+        
+        try {
+            $db = Db::getInstance();
+            $id = intval($bikeId);
+            $req = $db->prepare('SELECT * FROM bike WHERE id = :id');
+            $req->execute(array('id' => $id));
+            $bike = $req->fetch();
+            
+            return $bike['user_id'];
+
+            
+        } catch (Exception $e){
+            throw new Exception("DB error when creating new bike");
+        }
+    }
 }
