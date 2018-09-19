@@ -25,7 +25,7 @@ class Bike {
         
         try {
             $db = Db::getInstance();
-            $req = $db->query('SELECT * FROM bike WHERE is_booked = FALSE ORDER BY postalCode');
+            $req = $db->query('SELECT * FROM bike WHERE isBooked = FALSE ORDER BY postalCode');
     
             // we create a list of Bike objects from the db result
             foreach($req->fetchAll() as $bike){
@@ -64,13 +64,13 @@ class Bike {
             $db = Db::getInstance();
     
             $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode)
-                                      VALUES(:title, :description, :price, :postalCode, :user_id)');
+                                      VALUES(:title, :description, :price, :postalCode, :userId)');
             $req->execute(array(
                 'title' => $title,
                 'description' => $description,
                 'price' => $price,
                 'postalCode' => $postalCode,
-                'user_id' => $userId));
+                'userId' => (int)$userId));
     
             return true;
             
@@ -84,7 +84,7 @@ class Bike {
         
         try {
             $db = Db::getInstance();
-            $req = $db->prepare('UPDATE bike SET is_booked = TRUE WHERE id = :id');
+            $req = $db->prepare('UPDATE bike SET isBooked = TRUE WHERE id = :id');
             // the query was prepared, now we replace :id with our actual $id value
             $req->execute(array('id' => $id));
     
@@ -104,7 +104,7 @@ class Bike {
             $req->execute(array('id' => $id));
             $bike = $req->fetch();
             
-            return $bike['user_id'];
+            return $bike['userId'];
 
             
         } catch (Exception $e){

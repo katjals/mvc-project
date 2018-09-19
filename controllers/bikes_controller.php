@@ -1,17 +1,7 @@
 <?php
 
 class BikesController {
-
-//    protected $usersController;
-//
-//    /**
-//     * BikesController constructor.
-//     * @param $usersController
-//     */
-//    public function __construct($usersController)
-//    {
-//        $usersController = new UsersController();
-//    }
+    
     
     public function index() {
         // we store all the bikes in a variable
@@ -47,8 +37,9 @@ class BikesController {
             $description = GenericCode::stripHtmlCharacters($_POST["description"]);
             $price = GenericCode::stripHtmlCharacters($_POST["price"]);
             $postalCode = GenericCode::stripHtmlCharacters($_POST["postalCode"]);
+            $userId = $_SESSION['userId'];
     
-            $registeredBike = Bike::register($title, $description, $price, $postalCode, $_SESSION['userId']);
+            $registeredBike = Bike::register($title, $description, $price, $postalCode, $userId);
             if ($registeredBike){
                 $name = $title;
                 require_once(dirname(__DIR__).'/views/pages/success.php');
@@ -66,12 +57,11 @@ class BikesController {
         } else {
             $isBooked = Bike::book($_POST['id']);
             if ($isBooked){
-                //include 'users_controller.php';
-               // $user = UsersController::getContactInfo($userId);
                 $userId = Bike::getOwnerId($_POST['id']);
+                
                 include dirname(__DIR__).'/models/user.php';
                 $user = User::getContactInfo($userId);
-           //     $user2 = $usersController->getContactInfo($userId);
+                
                 require_once(dirname(__DIR__).'/views/bikes/booking.php');
             } else {
                 require_once(dirname(__DIR__).'/views/pages/error.php');
