@@ -20,6 +20,9 @@ if (isset($_SESSION['username'])){
 </header>
 
 <?php
+echo "Name: " . $_SESSION['username'] . ".<br>";
+echo "Id: " . $_SESSION['userId'];
+
 // navigation bar
 require(dirname(__DIR__).'/views/pages/'.$nav);
 

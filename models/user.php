@@ -17,11 +17,13 @@ class User
      * User constructor.
      * @param $name
      * @param $phoneNumber
+     * @param $id
      */
-    public function __construct($name, $phoneNumber)
+    public function __construct($name, $phoneNumber, $id)
     {
         $this->name = $name;
         $this->phoneNumber = $phoneNumber;
+        $this->id = $id;
     }
     
     public static function create($name, $password, $phoneNumber, $email)
@@ -51,7 +53,7 @@ class User
         try {
             $db = Db::getInstance();
             
-            $req = $db->prepare('SELECT password,name FROM user WHERE email = :email');
+            $req = $db->prepare('SELECT password,name,id FROM user WHERE email = :email');
             $req->execute(array('email' => $email));
             $user = $req->fetch();
             

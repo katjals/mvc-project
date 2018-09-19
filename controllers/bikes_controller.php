@@ -48,7 +48,7 @@ class BikesController {
             $price = GenericCode::stripHtmlCharacters($_POST["price"]);
             $postalCode = GenericCode::stripHtmlCharacters($_POST["postalCode"]);
     
-            $registeredBike = Bike::register($title, $description, $price, $postalCode);
+            $registeredBike = Bike::register($title, $description, $price, $postalCode, $_SESSION['userId']);
             if ($registeredBike){
                 $name = $title;
                 require_once(dirname(__DIR__).'/views/pages/success.php');

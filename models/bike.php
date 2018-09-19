@@ -58,18 +58,19 @@ class Bike {
         }
     }
     
-    public static function register($title, $description, $price, $postalCode){
+    public static function register($title, $description, $price, $postalCode, $userId){
         
         try {
             $db = Db::getInstance();
     
             $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode)
-                                      VALUES(:title, :description, :price, :postalCode)');
+                                      VALUES(:title, :description, :price, :postalCode, :user_id)');
             $req->execute(array(
                 'title' => $title,
                 'description' => $description,
                 'price' => $price,
-                'postalCode' => $postalCode));
+                'postalCode' => $postalCode,
+                'user_id' => $userId));
     
             return true;
             
