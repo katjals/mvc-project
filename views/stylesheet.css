@@ -14,10 +14,11 @@ body, html {
 /* Add padding to containers */
 .container {
   padding: 16px;
-  background-color: rgba(166, 197, 136, 0.74);
+  background-color: rgba(255, 246, 230, 0.5);
   margin: 0 auto;
   position: center;
   max-width: 70%;
+  color: rgba(22, 54, 25, 0.82);
 }
 
 /* Full-width input fields */
@@ -43,8 +44,8 @@ hr {
 
 /* Set a style for the submit button */
 .registerbtn {
-  background-color: #4CAF50;
-  color: white;
+  background-color: rgba(21, 49, 24, 0.72);
+  color: #a6c588;
   padding: 16px 20px;
   margin: 8px 0;
   border: none;
@@ -81,6 +82,6 @@ hr {
 }
 
 .navbar a:hover {
-  background: rgba(166, 197, 136, 0.22);
-  color: black;
+  background: rgba(255, 253, 177, 0.22);
+  color: rgba(255, 213, 27, 0.53);
 }

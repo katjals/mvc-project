@@ -2,7 +2,6 @@
 
 class GenericCode {
     
-    
     /**
      * GenericCode constructor.
      */

@@ -44,6 +44,7 @@ class UsersController {
                 if ($password == $psw){
                     // creates user based session and returns to index.php. Location will remove the get value, hence index redirect to home page
                     $_SESSION['username'] = $name;
+                    $_SESSION['id'] = $user['id'];
                     header( "Location: index.php" );
                 } else {
                     require_once(dirname(__DIR__).'/views/pages/error.php');

@@ -51,7 +51,7 @@ class User
         try {
             $db = Db::getInstance();
             
-            $req = $db->prepare('SELECT password,name FROM user WHERE email = :email');
+            $req = $db->prepare('SELECT password,name,id FROM user WHERE email = :email');
             $req->execute(array('email' => $email));
             $user = $req->fetch();
             

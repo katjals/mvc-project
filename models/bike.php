@@ -20,19 +20,19 @@ class Bike {
         $this->postalCode = $postalCode;
     }
     
-    public static function getAllNonBooked() {
-        $list = [];
+    public static function getAllNonBooked(){
+        $bikes = [];
         
         try {
             $db = Db::getInstance();
-            $req = $db->query('SELECT * FROM bike WHERE is_booked = FALSE ORDER BY postalCode');
+            $req = $db->query('SELECT * FROM bike WHERE isBooked = FALSE ORDER BY postalCode');
     
             // we create a list of Bike objects from the db result
             foreach($req->fetchAll() as $bike){
-                $list[] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
+                $bikes[] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['postalCode'], $bike['id']);
             }
     
-            return $list;
+            return $bikes;
             
         } catch (Exception $e){
             throw new Exception("DB error when fetching all bikes");
@@ -63,13 +63,16 @@ class Bike {
         try {
             $db = Db::getInstance();
     
-            $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode)
-                                      VALUES(:title, :description, :price, :postalCode)');
+            $req = $db->prepare('INSERT INTO bike(title, description, price, postalCode, isBooked, userId)
+                                      VALUES(:title, :description, :price, :postalCode, :isBooked, :userId)');
             $req->execute(array(
                 'title' => $title,
                 'description' => $description,
                 'price' => $price,
-                'postalCode' => $postalCode));
+                'postalCode' => $postalCode,
+                'isBooked' => false,
+                'userId' => $_SESSION['id']
+            ));
     
             return true;
             
@@ -79,20 +82,40 @@ class Bike {
         
     }
     
-    public static function book($id){
+    public static function book($bikeId){
         
         try {
             $db = Db::getInstance();
-            $req = $db->prepare('UPDATE bike SET is_booked = TRUE WHERE id = :id');
-            // the query was prepared, now we replace :id with our actual $id value
-            $req->execute(array('id' => $id));
-    
+            $req = $db->prepare('INSERT INTO booking(startTime, endTime, userId, bikeId)
+                                      VALUES(:startTime, :endTime, :userId, :bikeId)');
+            $req->execute(array(
+                'startTime' => (new DateTime('now'))->format('Y-m-d'),
+                'endTime' => ((new DateTime('now'))->add(new DateInterval('P1D')))->format('Y-m-d'),
+                'userId' => $_SESSION['id'],
+                'bikeId' => $bikeId
+            ));
+            
             return true;
     
         } catch (Exception $e){
             throw new Exception("DB error when creating new bike");
         }
     }
+    
+/*    public static function book($id){
+        
+        try {
+            $db = Db::getInstance();
+            $req = $db->prepare('UPDATE bike SET isBooked = TRUE WHERE id = :id');
+            // the query was prepared, now we replace :id with our actual $id value
+            $req->execute(array('id' => $id));
+            
+            return true;
+            
+        } catch (Exception $e){
+            throw new Exception("DB error when creating new bike");
+        }
+    }*/
     
     public static function getOwnerId($bikeId){
         
@@ -103,7 +126,7 @@ class Bike {
             $req->execute(array('id' => $id));
             $bike = $req->fetch();
             
-            return $bike['user_id'];
+            return $bike['userId'];
 
             
         } catch (Exception $e){

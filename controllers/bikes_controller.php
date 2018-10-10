@@ -1,17 +1,6 @@
 <?php
 
 class BikesController {
-
-//    protected $usersController;
-//
-//    /**
-//     * BikesController constructor.
-//     * @param $usersController
-//     */
-//    public function __construct($usersController)
-//    {
-//        $usersController = new UsersController();
-//    }
     
     public function index() {
         // we store all the bikes in a variable
