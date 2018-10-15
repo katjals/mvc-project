@@ -5,13 +5,15 @@
 
 <div class="container">
   <h1>Mine bookinger</h1>
-<hr>
+  <hr>
 
 <?php foreach($bookings as $booking){ ?>
     <p>
-        &#128690;
-        <?php echo $bookings->startTime; ?>,
-        <?php echo $bookings->bike['title']; ?>
+      &#128339; Booking af cyklen
+      <b><?php echo $booking->title; ?></b>
+      fra
+      <b><?php echo $booking->startTime; ?></b> til
+      <b><?php echo $booking->endTime; ?></b>
     </p>
 <?php } ?>
 </div>

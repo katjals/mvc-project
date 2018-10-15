@@ -4,7 +4,7 @@ class BikesController {
     
     public function index() {
         // we store all the bikes in a variable
-        $unsortedBikes = Bike::getAllNonBooked();
+        $unsortedBikes = Bike::getAllCurrentlyNonBooked();
         $bikes = $this->sortByUserPostalCode($unsortedBikes);
         $postalCode = $this->getPostalCodeOfUser();
         require_once(dirname(__DIR__).'/views/bikes/index.php');
@@ -55,17 +55,20 @@ class BikesController {
         } else {
             $isBooked = Bike::book($_POST['id']);
             if ($isBooked){
-                //include 'users_controller.php';
-               // $user = UsersController::getContactInfo($userId);
                 $userId = Bike::getOwnerId($_POST['id']);
                 include dirname(__DIR__).'/models/user.php';
                 $user = User::getContactInfo($userId);
-           //     $user2 = $usersController->getContactInfo($userId);
                 require_once(dirname(__DIR__).'/views/bikes/booking.php');
             } else {
                 require_once(dirname(__DIR__).'/views/pages/error.php');
             }
         }
+    }
+    
+    public function myBikes(){
+        $bikes = Bike::getOwnBikes();
+        
+        require_once(dirname(__DIR__).'/views/bikes/my_bikes.php');
     }
     
     private function getPostalCodeOfUser(){

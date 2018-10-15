@@ -6,8 +6,8 @@
 <div class="container">
   <h2>Cyklen er booket!</h2>
   <hr>
-  <p>Du kan kontakte ejeren, <?php echo $user->name; ?>, for at aftale afhentning og betaling.</p>
-  <p>&#9743; <?php echo $user->phoneNumber; ?> </p>
+  <p>Du kan kontakte ejeren, <b><?php echo $user->name; ?></b>, for at aftale afhentning og betaling.</p>
+  <p>&#9743; <b><?php echo $user->phoneNumber; ?></b> </p>
 
 </div>
 

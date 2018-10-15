@@ -4,7 +4,7 @@
 <body>
 
 <div class="container">
-  <h1>Ledige cykler</h1>
+  <h1>Cykler, som er ledige i dag</h1>
   <p>Cyklerne er sorteret efter dit postnummer: <?php echo $postalCode ?></p>
   <hr>
     
