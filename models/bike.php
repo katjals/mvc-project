@@ -2,16 +2,39 @@
 
 class Bike {
     
+    /**
+     * @var int
+     */
     public $id;
     
+    /**
+     * @var string
+     */
     public $title;
     
+    /**
+     * @var string
+     */
     public $description;
     
+    /**
+     * @var int
+     */
     public $price;
     
+    /**
+     * @var int
+     */
     public $postalCode;
     
+    /**
+     * Bike constructor.
+     * @param string $title
+     * @param string $description
+     * @param int $price
+     * @param int $postalCode
+     * @param int|null $id
+     */
     public function __construct($title, $description, $price, $postalCode, $id = null){
         $this->id = $id;
         $this->title = $title;
@@ -55,7 +78,7 @@ class Bike {
         try {
             $db = Db::getInstance();
             // we make sure $id is an integer
-            $id = intval($id);
+            $id = intval($bikeId);
             $req = $db->prepare('SELECT * FROM bike WHERE id = :id');
             // the query was prepared, now we replace :id with our actual $id value
             $req->execute(array('id' => $bikeId));

@@ -3,20 +3,35 @@
 class User
 {
     
+    /**
+     * @var int
+     */
     public $id;
     
+    /**
+     * @var string
+     */
     public $name;
     
+    /**
+     * @var string
+     */
     public $password;
     
+    /**
+     * @var int
+     */
     public $phoneNumber;
     
+    /**
+     * @var string
+     */
     public $email;
     
     /**
      * User constructor.
-     * @param $name
-     * @param $phoneNumber
+     * @param string $name
+     * @param int $phoneNumber
      */
     public function __construct($name, $phoneNumber)
     {
@@ -24,9 +39,16 @@ class User
         $this->phoneNumber = $phoneNumber;
     }
     
+    /**
+     * @param string $name
+     * @param string $password
+     * @param string $phoneNumber
+     * @param string $email
+     * @return bool
+     * @throws Exception
+     */
     public static function create($name, $password, $phoneNumber, $email)
     {
-        
         try {
             $db = Db::getInstance();
             
@@ -45,9 +67,13 @@ class User
         }
     }
     
+    /**
+     * @param string $email
+     * @return mixed
+     * @throws Exception
+     */
     public static function login($email)
     {
-        
         try {
             $db = Db::getInstance();
             
@@ -61,9 +87,13 @@ class User
         }
     }
     
+    /**
+     * @param int $userId
+     * @return User
+     * @throws Exception
+     */
     public static function getContactInfo($userId)
     {
-        
         try {
             $db = Db::getInstance();
             // we make sure $id is an integer

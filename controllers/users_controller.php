@@ -64,7 +64,7 @@ class UsersController {
     }
     
     /**
-     * @param $userId
+     * @param int $userId
      * @return User
      */
     public static function getContactInfo($userId){

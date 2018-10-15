@@ -71,10 +71,17 @@ class BikesController {
         require_once(dirname(__DIR__).'/views/bikes/my_bikes.php');
     }
     
+    /**
+     * @return string
+     */
     private function getPostalCodeOfUser(){
         return file_get_contents('https://ipapi.co/postal/', false);
     }
     
+    /**
+     * @param Bike[]
+     * @return Bike[]
+     */
     private function sortByUserPostalCode($bikes){
         usort($bikes, function($a, $b){
             $postalCode = $this->getPostalCodeOfUser();
