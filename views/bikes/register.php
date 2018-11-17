@@ -16,7 +16,7 @@
         <label for="description"><b>Beskriv den med flere ord</b></label>
         <input type="text" placeholder="Udfyld beskrivelse" name="description" required>
         
-        <label for="price"><b>Pris i kr pr. dag</b></label>
+        <label for="price"><b>Pris i kr pr. time</b></label>
         <input type="number" placeholder="Udfyld pris" name="price" required>
         
         <label for="postalCode"><b>Cyklens placering</b></label>

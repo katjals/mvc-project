@@ -3,12 +3,12 @@
 class Booking {
     
     /**
-     * @var DateTime
+     * @var string
      */
     public $startTime;
     
     /**
-     * @var DateTime
+     * @var string
      */
     public $endTime;
     
@@ -20,8 +20,8 @@ class Booking {
     
     /**
      * Booking constructor.
-     * @param DateTime $startTime
-     * @param DateTime $endTime
+     * @param string $startTime
+     * @param string $endTime
      * @param string $title
      */
     public function __construct($startTime, $endTime, $title)
@@ -47,8 +47,8 @@ class Booking {
             
             foreach($results as $result){
                 $bookings[] = new Booking(
-                    $result['startTime'],
-                    $result['endTime'],
+                    (new DateTime($result['startTime']))->format("d. M Y H:m") ,
+                    (new DateTime($result['endTime']))->format("d. M Y H:m") ,
                     $result['title']
                 );
             }

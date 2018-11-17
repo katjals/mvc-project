@@ -4,7 +4,7 @@
 <body>
 
 <div class="container">
-  <h1>Cykler, som er ledige i dag</h1>
+  <h1>Cykler, som er ledige nu</h1>
   <p>Cyklerne er sorteret efter dit postnummer: <?php echo $postalCode ?></p>
   <hr>
     
@@ -13,7 +13,7 @@
         &#128690;
         <?php echo $bike->title; ?>,
         <?php echo $bike->postalCode; ?>
-        <a href="?controller=bikes&action=show&id=<?php echo $bike->id; ?>">Læs mere</a>
+        <a class="link" href="?controller=bikes&action=show&id=<?php echo $bike->id; ?>">Læs mere</a>
       </p>
     <?php } ?>
 </div>

@@ -53,7 +53,7 @@ class Bike {
         try {
             $db = Db::getInstance();
             $req = $db->prepare('SELECT * FROM bike WHERE id NOT IN (SELECT booking.bikeId FROM booking WHERE :today BETWEEN booking.startTime AND booking.endTime)');
-            $req->execute(array('today' => (new DateTime('now'))->format('Y-m-d')));
+            $req->execute(array('today' => (new DateTime('now'))->format('Y-m-d H:i')));
             $results = $req->fetchAll();
             
             // we create a list of Bike objects from the db result
@@ -147,19 +147,45 @@ class Bike {
     }
     
     /**
-     * @param int $bikeId
+     * @param $id
+     * @param $title
+     * @param $description
+     * @param $price
+     * @param $postalCode
      * @return bool
      * @throws Exception
      */
-    public static function book($bikeId)
+    public static function update($id, $title, $description, $price, $postalCode)
+    {
+        try {
+            $db = Db::getInstance();
+    
+            $req = $db->prepare("UPDATE bike SET title = '$title', description = '$description', price = '$price',
+                                    postalCode = '$postalCode' WHERE id = '$id'");
+            $req->execute();
+    
+            return true;
+    
+        } catch (Exception $e){
+            throw new Exception("DB error when editing bike with id " . $id);
+        }
+    }
+    
+    /**
+     * @param int $bikeId
+     * @param DateTime $endDate
+     * @return bool
+     * @throws Exception
+     */
+    public static function book($bikeId, $endDate)
     {
         try {
             $db = Db::getInstance();
             $req = $db->prepare('INSERT INTO booking(startTime, endTime, userId, bikeId)
                                       VALUES(:startTime, :endTime, :userId, :bikeId)');
             $req->execute(array(
-                'startTime' => (new DateTime('now'))->format('Y-m-d'),
-                'endTime' => ((new DateTime('now'))->add(new DateInterval('P1D')))->format('Y-m-d'),
+                'startTime' => (new DateTime('today noon'))->format('Y-m-d H:i'),
+                'endTime' => (new DateTime($endDate))->format('Y-m-d H:i'),
                 'userId' => $_SESSION['id'],
                 'bikeId' => $bikeId
             ));

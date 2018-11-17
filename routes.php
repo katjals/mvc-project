@@ -30,7 +30,7 @@ function call($controller, $action){
 // a list of the controllers and their actions
 // we consider those "allowed" values
 $controllers = array('pages' => ['home', 'error'],
-                     'bikes' => ['index', 'show', 'registerBikeForm', 'register', 'book', 'myBikes'],
+                     'bikes' => ['index', 'show', 'registerBikeForm', 'register', 'book', 'myBikes', 'getBike'],
                      'users' => ['createUserForm', 'create', 'loginPage', 'login', 'logout'],
                      'bookings' => ['index']
     );

@@ -37,7 +37,12 @@ class BikesController {
             $price = GenericCode::stripHtmlCharacters($_POST["price"]);
             $postalCode = GenericCode::stripHtmlCharacters($_POST["postalCode"]);
     
-            $registeredBike = Bike::register($title, $description, $price, $postalCode);
+            if (isset($_POST['id'])){
+                $registeredBike = Bike::update($_POST['id'], $title, $description, $price, $postalCode);
+            } else {
+                $registeredBike = Bike::register($title, $description, $price, $postalCode);
+            }
+            
             if ($registeredBike){
                 $name = $title;
                 require_once(dirname(__DIR__).'/views/pages/success.php');
@@ -49,13 +54,13 @@ class BikesController {
     
     public function book(){
         // without an id we just redirect to the error page as we need the bike id to find it in the db
-        if (!isset($_POST['id'])){
+        if (!isset($_POST['bikeId']) || !isset($_POST['endDate'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
             
         } else {
-            $isBooked = Bike::book($_POST['id']);
+            $isBooked = Bike::book($_POST['bikeId'], $_POST['endDate']);
             if ($isBooked){
-                $userId = Bike::getOwnerId($_POST['id']);
+                $userId = Bike::getOwnerId($_POST['bikeId']);
                 include dirname(__DIR__).'/models/user.php';
                 $user = User::getContactInfo($userId);
                 require_once(dirname(__DIR__).'/views/bikes/booking.php');
@@ -69,6 +74,23 @@ class BikesController {
         $bikes = Bike::getOwnBikes();
         
         require_once(dirname(__DIR__).'/views/bikes/my_bikes.php');
+    }
+    
+    public function getBike(){
+        // we expect a url of form ?controller=bikess&actions=show&id=x
+        // without an id we just redirect to the error page as we need the bike id to find it in the db
+        if (!isset($_GET['id'])){
+            require_once(dirname(__DIR__).'/views/pages/error.php');
+            
+        } else {
+            // we use the given id to get the right bike
+            $bike = Bike::getOne($_GET['id']);
+            require_once(dirname(__DIR__).'/views/bikes/edit.php');
+        }
+    }
+    
+    public function edit(){
+    
     }
     
     /**
