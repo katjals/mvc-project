@@ -9,11 +9,11 @@
 
 <?php foreach($bookings as $booking){ ?>
     <p>
-      &#128339; Booking af cyklen
-      <b><?php echo $booking->title; ?></b>
+      &#128339;
+      "<span class="coloredText"><?php echo $booking->title; ?></span>"
       fra
-      <b><?php echo $booking->startTime; ?></b> til
-      <b><?php echo $booking->endTime; ?></b>
+      <span class="coloredText"><?php echo $booking->startTime; ?></span> til
+      <span class="coloredText"><?php echo $booking->endTime; ?></span>
     </p>
 <?php } ?>
 </div>

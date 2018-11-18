@@ -16,8 +16,7 @@ if (isset($_SESSION['username'])){
   </style>
 </head>
 <body>
-<header>
-</header>
+  <h1 id="title"> LEJ EN LADCYKEL</h1>
 
 <?php
 // navigation bar

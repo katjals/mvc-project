@@ -4,12 +4,10 @@
 <body>
 
   <div class="container">
-    <h1>Forside</h1>
-  
-  
-    <p>Inspirerende tekst der giver dig lyst til at gå i gang med at bruge sidens spændende funktionalitet.</p>
-  </div>
+    
+    <img src="/../../Hobby-projekt/Cargo+bike.jpg" alt="Cargo bike">
 
+  </div>
 </body>
 </html>
 
