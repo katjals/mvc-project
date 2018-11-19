@@ -41,14 +41,15 @@ class Booking {
         
         try {
             $db = Db::getInstance();
-            $req = $db->prepare('SELECT booking.startTime, booking.endTime, bike.title FROM booking INNER JOIN bike ON booking.bikeId = bike.id WHERE booking.userId = :id');
+            $req = $db->prepare('SELECT booking.startTime, booking.endTime, bike.title FROM booking
+                                          INNER JOIN bike ON booking.bikeId = bike.id WHERE booking.userId = :id');
             $req->execute(array('id' => $_SESSION['id']));
             $results = $req->fetchAll();
             
             foreach($results as $result){
                 $bookings[] = new Booking(
-                    (new DateTime($result['startTime']))->format("d. M Y H:m") ,
-                    (new DateTime($result['endTime']))->format("d. M Y H:m") ,
+                    (new DateTime($result['startTime']))->format("d. M Y H:i"),
+                    (new DateTime($result['endTime']))->format("d. M Y H:i"),
                     $result['title']
                 );
             }

@@ -44,7 +44,7 @@ class User
      * @param string $password
      * @param string $phoneNumber
      * @param string $email
-     * @return bool
+     * @return int $userId
      * @throws Exception
      */
     public static function create($name, $password, $phoneNumber, $email)
@@ -59,11 +59,40 @@ class User
                 'password' => $password,
                 'phoneNumber' => $phoneNumber,
                 'email' => $email));
+    
+            $req = $db->prepare('SELECT LAST_INSERT_ID() FROM user');
+            $req->execute();
+            $userId = $req->fetch()[0];
             
-            return true;
+            return $userId;
             
         } catch (Exception $e) {
             throw new Exception("DB error when creating " . $name);
+        }
+    }
+    
+    /**
+     * @param int $userId
+     * @param string[] $roles
+     * @throws Exception
+     */
+    public static function setRoles($userId, $roles)
+    {
+        try {
+            $db = Db::getInstance();
+    
+            foreach ($roles as $role){
+                $req = $db->prepare('SELECT id FROM role WHERE role = :role');
+                $req->execute(array('role' => $role));
+                $roleId = $req->fetch()[0];
+    
+                $req = $db->prepare('INSERT INTO user_role(userId, roleId) VALUES(:userId, :roleId)');
+                $req->execute(array(
+                    'roleId' => $roleId,
+                    'userId' => $userId));
+            }
+        } catch (Exception $e) {
+            throw new Exception("Db error on setting roles");
         }
     }
     
@@ -77,7 +106,15 @@ class User
         try {
             $db = Db::getInstance();
             
-            $req = $db->prepare('SELECT password,name,id FROM user WHERE email = :email');
+            //TODO join user roles
+     //       $req = $db->prepare('SELECT password,name,id FROM user WHERE email = :email');
+    
+            $req = $db->prepare('SELECT *
+                                          FROM user
+                                          INNER JOIN user_role ON user.id = user_role.userId
+                                          INNER JOIN role on user_role.roleId = role.id
+                                          WHERE user.email = :email');
+
             $req->execute(array('email' => $email));
             $user = $req->fetch();
             

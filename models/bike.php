@@ -160,6 +160,7 @@ class Bike {
         try {
             $db = Db::getInstance();
     
+            //TODO: set values outside query
             $req = $db->prepare("UPDATE bike SET title = '$title', description = '$description', price = '$price',
                                     postalCode = '$postalCode' WHERE id = '$id'");
             $req->execute();

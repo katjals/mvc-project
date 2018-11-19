@@ -29,10 +29,11 @@ body, html {
 .container {
   padding: 16px;
   background-color: rgba(255, 246, 230, 0.9);
-  margin: 0 auto;
+  margin: 0 auto 200px auto;
   position: center;
   max-width: 70%;
   color: rgba(22, 54, 25, 1);
+
 }
 
 /* Full-width input fields */

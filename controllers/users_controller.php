@@ -11,7 +11,8 @@ class UsersController {
     }
     
     public function create(){
-        if (!isset($_POST['name']) || !isset($_POST['password']) || !isset($_POST['phoneNumber']) || !isset($_POST['email'])){
+        if (!isset($_POST['name']) || !isset($_POST['password']) || !isset($_POST['phoneNumber'])
+            || !isset($_POST['email']) || !isset($_POST['roles'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
         
         } else {
@@ -19,10 +20,15 @@ class UsersController {
             $phoneNumber = GenericCode::stripHtmlCharacters($_POST["phoneNumber"]);
             $email = GenericCode::stripHtmlCharacters($_POST["email"]);
             $password = GenericCode::stripHtmlCharacters($_POST["password"]);
-    
-            $createdUser = User::create($name, $password, $phoneNumber, $email);
-            if ($createdUser){
-                require_once(dirname(__DIR__).'/views/pages/success.php');
+            
+            $userId = User::create($name, $password, $phoneNumber, $email);
+            if ($userId){
+                //TODO set role enums
+                User::setRoles($userId, $_POST['roles']);
+                
+                //TODO show browser modal showing sussecful creation?
+                self::createSession($name, $userId, $_POST['roles']);
+                
             } else {
                 require_once(dirname(__DIR__).'/views/pages/error.php');
             }
@@ -35,22 +41,40 @@ class UsersController {
             $email = GenericCode::stripHtmlCharacters($_POST["email"]);
             $password = GenericCode::stripHtmlCharacters($_POST["psw"]);
     
+            //todo return user roles
             $user = User::login($email);
             
-            if (isset($user)){
-                $name = $user['name'];
-                $psw = $user['password'];
+//            foreach ($user as $i){
+//                echo $i;
+//                echo " - ";
+//            }
+//            echo $user['role'][0];
+//            echo $user['role'][1];
+//            echo $user['name'];
     
-                if ($password == $psw){
+            if (isset($user)){
+                if ($password == $user['password']){
                     // creates user based session and returns to index.php. Location will remove the get value, hence index redirect to home page
-                    $_SESSION['username'] = $name;
-                    $_SESSION['id'] = $user['id'];
-                    header( "Location: index.php" );
+                    self::createSession($user['name'], $user['id'], $user['role']);
                 } else {
                     require_once(dirname(__DIR__).'/views/pages/error.php');
                 }
             }
         }
+    }
+    
+    /**
+     * @param string $name
+     * @param int $id
+     * @param string[] $roles
+     */
+    private function createSession($name, $id, $roles = [])
+    {
+        //TODO set roles on session
+        $_SESSION['username'] = $name;
+        $_SESSION['id'] = $id;
+        $_SESSION['roles'] = $roles;
+        header( "Location: index.php" );
     }
     
     public function logout()
@@ -68,6 +92,7 @@ class UsersController {
      * @return User
      */
     public static function getContactInfo($userId){
+        //TODO is this still necessary?
         include_once(dirname(__DIR__).'/models/user.php');
     
         $user = User::getContactInfo($userId);
