@@ -86,10 +86,10 @@ class BikesController {
         } else {
             $bike = Bike::getOne($_GET['id']);
             
-            if (($_GET['page'] == "edit") && GenericCode::userHasPermission(['owner'])){
+            if (($_GET['page'] == "edit") && GenericCode::checkUserPermission(['owner'], true)){
                 require_once(dirname(__DIR__).'/views/bikes/edit.php');
                 
-            } elseif (($_GET['page'] == "book") && GenericCode::userHasPermission(['renter'])){
+            } elseif (($_GET['page'] == "book") && GenericCode::checkUserPermission(['renter'], true)){
                 require_once(dirname(__DIR__).'/views/bikes/show.php');
     
             }
