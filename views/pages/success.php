@@ -4,9 +4,9 @@
 <body>
 
 <div class="container">
-  <p> YAAAS !</p>
+  <p> YAAAS - Det lykkedes!</p>
   
-  <p>Det lykkedes, <?php echo $name; ?>!</p>
+  <p>Stærkt navn <?php echo $name; ?>!</p>
 </div>
 
 </body>

@@ -10,14 +10,16 @@ function call($controller, $action){
             $controller = new PagesController();
             break;
         case 'bikes':
-            // we need the model to query the database later in the controller
             require_once('models/bike.php');
             $controller = new BikesController();
             break;
         case 'users':
-            // we need the model to query the database later in the controller
             require_once('models/user.php');
             $controller = new UsersController();
+            break;
+        case 'bookings':
+            require_once('models/booking.php');
+            $controller = new BookingsController();
             break;
     }
     
@@ -28,8 +30,10 @@ function call($controller, $action){
 // a list of the controllers and their actions
 // we consider those "allowed" values
 $controllers = array('pages' => ['home', 'error'],
-                     'bikes' => ['index', 'show', 'registerBikeForm', 'register', 'book'],
-                     'users' => ['createUserForm', 'create', 'loginPage', 'login', 'logout']);
+                     'bikes' => ['index', 'registerBikeForm', 'register', 'book', 'myBikes', 'getBike'],
+                     'users' => ['createUserForm', 'create', 'loginPage', 'login', 'logout'],
+                     'bookings' => ['index']
+    );
 
 // check that the requested controller and action are both allowed
 // if someone tries to access something else he will be redirected to the error action of the page
