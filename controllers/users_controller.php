@@ -2,61 +2,83 @@
 
 class UsersController {
     
-    public function createUserForm(){
+    public function createUserForm()
+    {
         require_once(dirname(__DIR__).'/views/users/create.php');
     }
     
-    public function loginPage(){
+    public function loginPage()
+    {
         require_once(dirname(__DIR__).'/views/users/login.php');
     }
     
-    public function create(){
-        // we expect a url of form ?controller=posts&actions=show&id=x
-        // without an id we just redirect to the error page as we need the post id to find it in the db
-        if (!isset($_POST['name']) || !isset($_POST['password']) || !isset($_POST['phoneNumber']) || !isset($_POST['email'])){
+    public function create()
+    {
+        if (!isset($_POST['name']) || !isset($_POST['password']) || !isset($_POST['phoneNumber'])
+            || !isset($_POST['email']) || !isset($_POST['roles'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
-        }
         
-        $name = $this->testInput($_POST["name"]);
-        $phoneNumber = $this->testInput($_POST["phoneNumber"]);
-        $email = $this->testInput($_POST["email"]);
-        $password = $this->testInput($_POST["password"]);
-    
-        // we use the given id to get the right post
-        $createdUser = User::create($name, $password, $phoneNumber, $email);
-        if ($createdUser){
-            require_once(dirname(__DIR__).'/views/pages/success.php');
         } else {
-            require_once(dirname(__DIR__).'/views/pages/error.php');
+            $name = GenericCode::stripHtmlCharacters($_POST["name"]);
+            $phoneNumber = GenericCode::stripHtmlCharacters($_POST["phoneNumber"]);
+            $email = GenericCode::stripHtmlCharacters($_POST["email"]);
+            $password = GenericCode::stripHtmlCharacters($_POST["password"]);
+            
+            $userId = User::create($name, $password, $phoneNumber, $email);
+            if ($userId){
+                //TODO set role enums
+                User::setRoles($userId, $_POST['roles']);
+                
+                //TODO show browser modal showing sussecful creation?
+                self::createSession($name, $userId, $_POST['roles']);
+                
+            } else {
+                require_once(dirname(__DIR__).'/views/pages/error.php');
+            }
         }
     }
     
     public function login()
     {
         if (isset($_POST['email']) && isset($_POST['psw'])) {
-            $email = $this->testInput($_POST["email"]);
-            $password = $this->testInput($_POST["psw"]);
-    
+            $email = GenericCode::stripHtmlCharacters($_POST["email"]);
+            $password = GenericCode::stripHtmlCharacters($_POST["psw"]);
+            
+            //todo return multiple user roles
             $user = User::login($email);
             
-            if (isset($user)){
-                $name = $user['name'];
-                $psw = $user['password'];
-    
-                if ($password == $psw){
-                    require_once(dirname(__DIR__).'/views/pages/success.php');
+            if (isset($user)) {
+                if ($password == $user['password']) {
+                    // creates user based session and returns to index.php. Location will remove the get value, hence index redirect to home page
+                    self::createSession($user['name'], $user['userId'], [$user['role']]);
+        
                 } else {
-                    require_once(dirname(__DIR__).'/views/pages/error.php');
+                    require_once(dirname(__DIR__) . '/views/pages/error.php');
                 }
             }
         }
     }
     
-    function testInput($data) {
-        $genericController = new GenericCode();
-        $genericController->testInput($data);
-        return $data;
+    /**
+     * @param string $name
+     * @param int $id
+     * @param string[] $roles
+     */
+    private function createSession($name, $id, $roles = [])
+    {
+        $_SESSION['username'] = $name;
+        $_SESSION['id'] = $id;
+        $_SESSION['roles'] = $roles;
+        header( "Location: index.php" );
     }
     
+    public function logout()
+    {
+        if ($_GET['action'] === 'logout' ){
+            session_destroy();
+            // returns to index.php. Location will remove the get value, hence index redirect to home page
+            header( "Location: index.php" );
+        }
+    }
     
 }

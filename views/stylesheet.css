@@ -1,23 +1,39 @@
-body {
+body  {
+  background-image: url("/../../Hobby-projekt/tom-juggins-681918-unsplash.jpg");
+  background-repeat: repeat;
+  background-size: 100%;
 }
 
 * {
   box-sizing: border-box;
 }
 
+#title {
+  font-family: monospace;
+  color: rgb(255, 213, 27);
+  font-size: 600%;
+  padding-top: 40px;
+  text-align: center;
+  text-shadow: 1px 1px 50px rgba(128, 49, 7, 0.58);
+  background: -webkit-linear-gradient(80deg, #ffe709, #ffe61b 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
 body, html {
   font-family: sans-serif;
-  height: 100%;
-  margin: 0;
 }
 
 /* Add padding to containers */
 .container {
   padding: 16px;
-  background-color: rgba(166, 197, 136, 0.74);
-  margin: 0 auto;
+  padding-bottom: 60px;
+  background-color: rgba(255, 246, 230, 0.9);
+  margin: 0 auto 200px auto;
   position: center;
   max-width: 70%;
+  color: rgba(22, 54, 25, 1);
 }
 
 /* Full-width input fields */
@@ -37,14 +53,14 @@ input[type=text]:focus, input[type=password]:focus, input[type=number]:focus, in
 
 /* Overwrite default styles of hr */
 hr {
-  border: 1px solid #f1f1f1;
+  border: 1px solid rgba(21, 49, 24, 0.08);
   margin-bottom: 25px;
 }
 
 /* Set a style for the submit button */
 .registerbtn {
-  background-color: #4CAF50;
-  color: white;
+  background-color: rgba(21, 49, 24, 0.72);
+  color: #f2f2f2;
   padding: 16px 20px;
   margin: 8px 0;
   border: none;
@@ -66,14 +82,16 @@ hr {
   position: center;
   top: 0;
   width: 70%;
-  margin-top: 100px;
+}
 
+.headnav {
+  margin-top: 60px;
 }
 
 .navbar a {
   float: left;
   display: block;
-  color: #f2f2f2;
+  color: #eed0c7;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -81,6 +99,46 @@ hr {
 }
 
 .navbar a:hover {
-  background: rgba(166, 197, 136, 0.22);
-  color: black;
+  color: rgba(255, 213, 27, 0.53);
+}
+
+/* unvisited link */
+a.link:link {
+  color: green;
+  text-decoration: none;
+}
+
+/* visited link */
+a.link:visited {
+  color: green;
+  text-decoration: none;
+}
+
+/* mouse over link */
+a.link:hover {
+  color: #eeb531;
+  text-decoration: underline;
+}
+
+/* selected link */
+a.link:active {
+  color: #9f3411;
+}
+
+.coloredText {
+  color: darkolivegreen;
+}
+
+label {
+  color: #42572a;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  opacity: 0.6;
 }

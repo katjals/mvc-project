@@ -9,9 +9,18 @@ class Db {
     
     public static function getInstance() {
         if (!isset(self::$instance)) {
-            $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-            self::$instance = new PDO('mysql:host=localhost;dbname=hobby_project',
-                'root', '', $pdo_options);
+            
+            try {
+                $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+                self::$instance = new PDO('mysql:host=localhost;dbname=bike_page',
+                    'root', '', $pdo_options);
+
+//                self::$instance = new PDO('mysql:host=localhost;dbname=hobby_project',
+//                    'root', '', $pdo_options);
+
+            } catch (PDOException $e){
+                echo 'Could not connect : '. $e->getMessage();
+            }
         }
         return self::$instance;
     }
