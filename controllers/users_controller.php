@@ -2,15 +2,18 @@
 
 class UsersController {
     
-    public function createUserForm(){
+    public function createUserForm()
+    {
         require_once(dirname(__DIR__).'/views/users/create.php');
     }
     
-    public function loginPage(){
+    public function loginPage()
+    {
         require_once(dirname(__DIR__).'/views/users/login.php');
     }
     
-    public function create(){
+    public function create()
+    {
         if (!isset($_POST['name']) || !isset($_POST['password']) || !isset($_POST['phoneNumber'])
             || !isset($_POST['email']) || !isset($_POST['roles'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
@@ -40,24 +43,17 @@ class UsersController {
         if (isset($_POST['email']) && isset($_POST['psw'])) {
             $email = GenericCode::stripHtmlCharacters($_POST["email"]);
             $password = GenericCode::stripHtmlCharacters($_POST["psw"]);
-    
-            //todo return user roles
+            
+            //todo return multiple user roles
             $user = User::login($email);
             
-//            foreach ($user as $i){
-//                echo $i;
-//                echo " - ";
-//            }
-//            echo $user['role'][0];
-//            echo $user['role'][1];
-//            echo $user['name'];
-    
-            if (isset($user)){
-                if ($password == $user['password']){
+            if (isset($user)) {
+                if ($password == $user['password']) {
                     // creates user based session and returns to index.php. Location will remove the get value, hence index redirect to home page
-                    self::createSession($user['name'], $user['id'], $user['role']);
+                    self::createSession($user['name'], $user['userId'], [$user['role']]);
+        
                 } else {
-                    require_once(dirname(__DIR__).'/views/pages/error.php');
+                    require_once(dirname(__DIR__) . '/views/pages/error.php');
                 }
             }
         }
@@ -70,7 +66,6 @@ class UsersController {
      */
     private function createSession($name, $id, $roles = [])
     {
-        //TODO set roles on session
         $_SESSION['username'] = $name;
         $_SESSION['id'] = $id;
         $_SESSION['roles'] = $roles;
@@ -84,19 +79,6 @@ class UsersController {
             // returns to index.php. Location will remove the get value, hence index redirect to home page
             header( "Location: index.php" );
         }
-        
-    }
-    
-    /**
-     * @param int $userId
-     * @return User
-     */
-    public static function getContactInfo($userId){
-        //TODO is this still necessary?
-        include_once(dirname(__DIR__).'/models/user.php');
-    
-        $user = User::getContactInfo($userId);
-        return $user;
     }
     
 }

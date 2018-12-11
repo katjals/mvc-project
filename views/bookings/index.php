@@ -7,7 +7,9 @@
   <h1>Mine bookinger</h1>
   <hr>
 
-<?php foreach($bookings as $booking){ ?>
+<?php
+if (!empty($bookings)){
+  foreach($bookings as $booking){ ?>
     <p>
       &#128339;
       "<span class="coloredText"><?php echo $booking->title; ?></span>"
@@ -15,7 +17,13 @@
       <span class="coloredText"><?php echo $booking->startTime; ?></span> til
       <span class="coloredText"><?php echo $booking->endTime; ?></span>
     </p>
+  <?php }
+} else { ?>
+  Du har endnu ikke foretaget en booking. Du kan finde og booke cykler
+  <a class="link" href="?controller=bikes&action=index">her</a>.
+
 <?php } ?>
+
 </div>
 
 </body>

@@ -8,14 +8,20 @@
   <p>Cyklerne er sorteret efter dit postnummer: <?php echo $postalCode ?></p>
   <hr>
     
-    <?php foreach($bikes as $bike){ ?>
+    <?php
+    if (!empty($bikes)){
+    foreach($bikes as $bike){ ?>
       <p>
         &#128690;
-        <?php echo $bike->title; ?>,
-        <?php echo $bike->postalCode; ?>
-        <a class="link" href="?controller=bikes&action=show&id=<?php echo $bike->id; ?>">Læs mere</a>
+          <?php echo $bike->title; ?>,
+          <?php echo $bike->postalCode; ?>
+        <a class="link" href="?controller=bikes&action=getBike&id=<?php echo $bike->id; ?>&page=book">Læs mere</a>
       </p>
+    <?php }
+    } else { ?>
+      Der er ingen ledige cykler.
     <?php } ?>
+    
 </div>
 
 </body>

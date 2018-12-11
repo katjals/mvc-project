@@ -21,11 +21,12 @@
                 <?php echo $bike->postalCode; ?>,
                 <?php echo $bike->description; ?>,
                 <?php echo $bike->price; ?> kr. pr. dag.
-                <a class="link" href="?controller=bikes&action=getBike&id=<?php echo $bike->id; ?>">Rediger</a>
+                <a class="link" href="?controller=bikes&action=getBike&id=<?php echo $bike->id; ?>&page=edit">Rediger</a>
             </p>
         <?php }
     } else {  ?>
         Du har endnu ikke registreret en cykel.
+        Du kan oprette dine cykler <a class="link" href="?controller=bikes&action=registerBikeForm">her</a>.
     <?php } ?>
     
     

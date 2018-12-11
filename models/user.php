@@ -106,17 +106,17 @@ class User
         try {
             $db = Db::getInstance();
             
-            //TODO join user roles
-     //       $req = $db->prepare('SELECT password,name,id FROM user WHERE email = :email');
-    
+            //TODO only the first role is fetched
             $req = $db->prepare('SELECT *
                                           FROM user
                                           INNER JOIN user_role ON user.id = user_role.userId
-                                          INNER JOIN role on user_role.roleId = role.id
+                                          INNER JOIN role ON user_role.roleId = role.id
                                           WHERE user.email = :email');
 
             $req->execute(array('email' => $email));
             $user = $req->fetch();
+    
+            //echo'<pre>';print_r($user);echo'</pre>';
             
             return $user;
         } catch (Exception $e) {

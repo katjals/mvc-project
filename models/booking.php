@@ -41,8 +41,7 @@ class Booking {
         
         try {
             $db = Db::getInstance();
-            $req = $db->prepare('SELECT booking.startTime, booking.endTime, bike.title FROM booking
-                                          INNER JOIN bike ON booking.bikeId = bike.id WHERE booking.userId = :id');
+            $req = $db->prepare('SELECT booking.startTime, booking.endTime, bike.title FROM booking INNER JOIN bike ON booking.bikeId = bike.id WHERE booking.userId = :id');
             $req->execute(array('id' => $_SESSION['id']));
             $results = $req->fetchAll();
             

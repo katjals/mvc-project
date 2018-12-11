@@ -22,11 +22,9 @@
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Udfyld password" name="password" required>
       
-        <label for="roles"><b>Brugertype</b></label><br><br>
+        <label for="roles"><b>Hvordan vil du bruge siden?</b></label><br><br>
         <input type="checkbox" name="roles[]" value="owner"> Jeg vil udleje mine cykler<br><br>
         <input type="checkbox" name="roles[]" value="renter"> Jeg vil leje andres cykler<br>
-        <!--      gemmes på typen vehicle=Bike&vehicle=Car-->
-      
       <hr>
         <button type="submit" name="submit" class="registerbtn" >Opret</button>
     </div>
