@@ -7,7 +7,7 @@
         <a href="?controller=users&action=logout">Log ud</a>
         <?php
         if (GenericCode::checkUserPermission(["renter"], true)){ ?>
-          <a href="?controller=bikes&action=index">Cykler til leje</a>
+          <a href="?controller=bikes&action=selectTime">Cykler til leje</a>
         <?php }
         if (GenericCode::checkUserPermission(["owner"], true)){ ?>
           <a href="?controller=bikes&action=myBikes">Mine cykler</a>

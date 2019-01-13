@@ -27,9 +27,6 @@ class GenericCode {
     }
     
     /**
-     * @param  $roles
-     */
-    /**
      * @param string[] $roles
      * @param bool $returnBool
      * @return bool
