@@ -19,7 +19,6 @@ if (isset($_SESSION['username'])){
   <h1 id="title"> LEJ EN LADCYKEL</h1>
 
 <?php
-
 // navigation bar
 require(dirname(__DIR__).'/views/pages/'.$nav);
 

@@ -18,6 +18,7 @@
             <p>
                 &#128690;
                 <?php echo $bike->title; ?>,
+                <?php echo $bike->postalCode; ?>,
                 <?php echo $bike->description; ?>,
                 <?php echo $bike->price; ?> kr. pr. dag.
                 <a class="link" href="?controller=bikes&action=getBike&id=<?php echo $bike->id; ?>&page=edit">Rediger</a>
