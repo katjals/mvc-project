@@ -19,9 +19,7 @@
         <label for="price"><b>Pris i kr pr. time</b></label>
         <input type="number" placeholder="Udfyld pris" name="price" value="<?php echo $bike->price; ?>" required>
         
-        <label for="postalCode"><b>Cyklens placering</b></label>
-        <input type="number" placeholder="Udfyld postnummer" name="postalCode" value="<?php echo $bike->postalCode; ?>" required>
-        <hr>
+         <hr>
         <button type="submit" name="submit" class="registerbtn" >Rediger</button>
     </div>
 </form>

@@ -27,8 +27,7 @@ body, html {
 
 /* Add padding to containers */
 .container {
-  padding: 16px;
-  padding-bottom: 60px;
+  padding: 50px;
   background-color: rgba(255, 246, 230, 0.9);
   margin: 0 auto 200px auto;
   position: center;
@@ -141,4 +140,8 @@ img {
   padding-top: 50px;
   padding-bottom: 50px;
   opacity: 0.6;
+}
+
+#map {
+  height: 50%;
 }
