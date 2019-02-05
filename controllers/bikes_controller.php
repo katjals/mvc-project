@@ -13,12 +13,8 @@ class BikesController {
             $separatedDates = explode(" to ",$_POST['dates']);
             $_SESSION['startDate'] = $separatedDates[0];
             $_SESSION['endDate'] = $separatedDates[1];
-            
-//            $unsortedBikes = Bike::getAllNonBooked($startDate, $endDate);
-//            $bikes = $this->sortByUserPostalCode($unsortedBikes);
-//            $postalCode = $this->getPostalCodeOfUser();
     
-            $xmlFile = Bike::getAllNonBooked($_SESSION['startDate'], $_SESSION['endDate']);
+            $locations = Bike::getAllNonBooked($_SESSION['startDate'], $_SESSION['endDate']);
             
             require_once(dirname(__DIR__).'/views/bikes/select_time.php');
         }
@@ -33,62 +29,65 @@ class BikesController {
     
     public function register()
     {
-        echo'<pre>';print_r($_POST);echo'</pre>';
-    
-    
         GenericCode::checkUserPermission(['owner']);
         
-        if (!isset($_POST['title']) || !isset($_POST['description']) || !isset($_POST['price']) || empty($_POST['lat']) || empty($_POST['lon'])){
-            require_once(dirname(__DIR__).'/views/pages/error.php');
-            
-        } else {
+        if (!empty($_POST['title']) || !empty($_POST['description']) || !empty($_POST['price'])){
             $title = GenericCode::stripHtmlCharacters($_POST["title"]);
             $description = GenericCode::stripHtmlCharacters($_POST["description"]);
             $price = GenericCode::stripHtmlCharacters($_POST["price"]);
-            $streetNumber = GenericCode::stripHtmlCharacters($_POST["streetNumber"]);
-            $streetName = GenericCode::stripHtmlCharacters($_POST["streetName"]);
-            $city = GenericCode::stripHtmlCharacters($_POST["city"]);
-            $postalCode = GenericCode::stripHtmlCharacters($_POST["postalCode"]);
-            $country = GenericCode::stripHtmlCharacters($_POST["country"]);
-            $lat = GenericCode::stripHtmlCharacters($_POST["lat"]);
-            $lon = GenericCode::stripHtmlCharacters($_POST["lon"]);
-            
+    
             if (isset($_POST['id'])){
-                $registeredBike = Bike::update($_POST['id'], $title, $description, $price, $postalCode);
-            } else {
-                $registeredBike = Bike::register($title, $description, $price, $streetNumber,
-                    $streetName, $city, $postalCode, $country, $lat, $lon);
-            }
-            
-            if ($registeredBike){
-                $name = $title;
-                require_once(dirname(__DIR__).'/views/pages/success.php');
+                $bike = new Bike($title, $description, $price, $_POST['id']);
+                Bike::update($bike);
+                
+                if(!empty($_POST['lat']) || !empty($_POST['lon'])){
+                    $address = $this->stripHtmlAddress();
+                    Address::update($address);
+                }
+           
+            } elseif (!empty($_POST['lat']) || !empty($_POST['lon'])) {
+                $address = $this->stripHtmlAddress();
+                $addressId = Address::register($address);
+                
+                $bike = new Bike($title, $description, $price, null,
+                    new Address(null, null, null, null, null, null, $addressId));
+                //TODO use setter instead
+                Bike::register($bike);
+                
             } else {
                 require_once(dirname(__DIR__).'/views/pages/error.php');
             }
+    
+            $name = $title;
+            require_once(dirname(__DIR__).'/views/pages/success.php');
+            
+        } else {
+            require_once(dirname(__DIR__).'/views/pages/error.php');
         }
     }
     
-    public function book()
+    /**
+     * @return Address
+     */
+    public function stripHtmlAddress()
     {
-        GenericCode::checkUserPermission(['renter']);
-        
-        if (!isset($_POST['bikeId']) || !isset($_POST['endDate']) || !isset($_POST['startDate'])){
-            require_once(dirname(__DIR__).'/views/pages/error.php');
-            
+        $streetNumber = GenericCode::stripHtmlCharacters($_POST["streetNumber"]);
+        $streetName = GenericCode::stripHtmlCharacters($_POST["streetName"]);
+        $city = GenericCode::stripHtmlCharacters($_POST["city"]);
+        $postalCode = GenericCode::stripHtmlCharacters($_POST["postalCode"]);
+        $country = GenericCode::stripHtmlCharacters($_POST["country"]);
+        $lat = GenericCode::stripHtmlCharacters($_POST["lat"]);
+        $lon = GenericCode::stripHtmlCharacters($_POST["lon"]);
+    
+        $street = $streetName . " " . $streetNumber;
+        if (!empty($_POST['addressId'])){
+            $address = new Address($postalCode, $city, $street, $country, $lat, $lon, $_POST['addressId']);
+    
         } else {
-            $isBooked = Bike::book($_POST['bikeId'], $_POST['endDate'], $_POST['startDate']);
-            if ($isBooked){
-                $userId = Bike::getOwnerId($_POST['bikeId']);
-                include dirname(__DIR__).'/models/user.php';
-                $user = User::getContactInfo($userId);
-                include dirname(__DIR__).'/models/address.php';
-                $address = Address::getBikeAddress($_POST['bikeId']);
-                require_once(dirname(__DIR__).'/views/bikes/booking.php');
-            } else {
-                require_once(dirname(__DIR__).'/views/pages/error.php');
-            }
+            $address = new Address($postalCode, $city, $street, $country, $lat, $lon);
         }
+        
+        return $address;
     }
     
     public function myBikes()
@@ -111,14 +110,15 @@ class BikesController {
     {
         GenericCode::checkUserPermission(['owner', 'renter']);
 
-        if (!isset($_GET['id']) || !isset($_GET['page'])){
+        if (empty($_GET['id']) || empty($_GET['page'])){
             require_once(dirname(__DIR__).'/views/pages/error.php');
             
         } else {
             $bike = Bike::getOne($_GET['id']);
             
             if (($_GET['page'] == "edit") && GenericCode::checkUserPermission(['owner'], true)){
-                require_once(dirname(__DIR__).'/views/bikes/edit.php');
+                $address = Address::getBikeAddress($_GET['id']);
+                require_once(dirname(__DIR__).'/views/bikes/register.php');
                 
             } elseif (($_GET['page'] == "book") && GenericCode::checkUserPermission(['renter'], true)
                 && isset($_SESSION['startDate']) && isset($_SESSION['endDate'])){

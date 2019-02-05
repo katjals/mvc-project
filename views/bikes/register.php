@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--  <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">-->
 </head>
 <body>
 
-<form method="post" action="?controller=bikes&action=register">
-    <div class="container">
+<?php
+  if (!isset($bike)){ ?>
+    <form method="post" action="?controller=bikes&action=register">
+      <div class="container">
         <h1>Opret en ladcykel</h1>
         <p>Opret en ladcykel som andre kan leje.</p>
         <hr>
@@ -23,19 +24,59 @@
         <label for="postalCode"><b>Cyklens placering</b></label>
         <input id="autocomplete" placeholder=""
                onFocus="geolocate()" type="text" required>
-  
-      <input type="hidden" id="street_number" name="streetNumber">
-      <input type="hidden" id="route" name="streetName">
-      <input type="hidden" id="locality" name="city">
-      <input type="hidden" id="postal_code" name="postalCode">
-      <input type="hidden" id="country" name="country">
-      <input type="hidden" id="lat" name="lat">
-      <input type="hidden" id="lon" name="lon">
-  
-      <hr>
+      
+        <input type="hidden" id="street_number" name="streetNumber">
+        <input type="hidden" id="route" name="streetName">
+        <input type="hidden" id="locality" name="city">
+        <input type="hidden" id="postal_code" name="postalCode">
+        <input type="hidden" id="country" name="country">
+        <input type="hidden" id="lat" name="lat" required>
+        <input type="hidden" id="lon" name="lon" required>
+      
+        <hr>
         <button type="submit" name="submit" class="registerbtn" >Opret</button>
-    </div>
-</form>
+      </div>
+    </form>
+<?php
+  } else { ?>
+    <form method="post" action="?controller=bikes&action=register">
+      <div class="container">
+        <h1>Rediger ladcykel</h1>
+        <hr>
+        <input type="hidden" name="id" value="<?php echo $bike->id; ?>" >
+        <input type="hidden" name="addressId" value="<?php echo $address->id; ?>" >
+  
+        <label for="title"><b>Beskrivende Titel</b></label>
+        <input type="text" placeholder="" name="title" value="<?php echo $bike->title; ?>" required>
+      
+        <label for="description"><b>Beskriv den med flere ord</b></label>
+        <input type="text" placeholder="" name="description" value="<?php echo $bike->description; ?>" required>
+      
+        <label for="price"><b>Pris i kr pr. time</b></label>
+        <input type="number" placeholder="" name="price" value="<?php echo $bike->price; ?>" required>
+  
+        <label for="postalCode"><b>Cyklens placering</b></label>
+        <input id="autocomplete" onFocus="geolocate()" type="text"
+               placeholder="<?php echo $address->street . ", " . $address->city . ", " . $address->country; ?>" >
+  
+        <input type="hidden" id="street_number" name="streetNumber">
+        <input type="hidden" id="route" name="streetName">
+        <input type="hidden" id="locality" name="city">
+        <input type="hidden" id="postal_code" name="postalCode">
+        <input type="hidden" id="country" name="country">
+        <input type="hidden" id="lat" name="lat">
+        <input type="hidden" id="lon" name="lon">
+      
+        <hr>
+        <button type="submit" name="submit" class="registerbtn" >Rediger</button>
+      </div>
+    </form>
+<?php
+  }
+?>
+
+
+
 
 <script>
   var placeSearch, autocomplete;
@@ -101,7 +142,7 @@
   }
   
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=KEY&libraries=places&callback=initAutocomplete"
+<script src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initAutocomplete"
         async defer></script>
 </body>
 </html>

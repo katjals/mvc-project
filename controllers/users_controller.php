@@ -29,7 +29,6 @@ class UsersController {
                 //TODO set role enums
                 User::setRoles($userId, $_POST['roles']);
                 
-                //TODO show browser modal showing sussecful creation?
                 self::createSession($name, $userId, $_POST['roles']);
                 
             } else {
@@ -44,13 +43,13 @@ class UsersController {
             $email = GenericCode::stripHtmlCharacters($_POST["email"]);
             $password = GenericCode::stripHtmlCharacters($_POST["psw"]);
             
-            //todo return multiple user roles
             $user = User::login($email);
             
             if (isset($user)) {
                 if ($password == $user['password']) {
                     // creates user based session and returns to index.php. Location will remove the get value, hence index redirect to home page
-                    self::createSession($user['name'], $user['userId'], [$user['role']]);
+                    $roles = User::getRoles($user['id']);
+                    self::createSession($user['name'], $user['id'], $roles);
         
                 } else {
                     require_once(dirname(__DIR__) . '/views/pages/error.php');
@@ -64,7 +63,7 @@ class UsersController {
      * @param int $id
      * @param string[] $roles
      */
-    private function createSession($name, $id, $roles = [])
+    private function createSession($name, $id, $roles)
     {
         $_SESSION['username'] = $name;
         $_SESSION['id'] = $id;

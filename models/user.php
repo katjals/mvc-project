@@ -106,23 +106,56 @@ class User
         try {
             $db = Db::getInstance();
             
-            //TODO only the first role is fetched
             $req = $db->prepare('SELECT *
                                           FROM user
-                                          INNER JOIN user_role ON user.id = user_role.userId
-                                          INNER JOIN role ON user_role.roleId = role.id
-                                          WHERE user.email = :email');
+                                          WHERE user.email = :email
+                                          ');
 
             $req->execute(array('email' => $email));
             $user = $req->fetch();
     
-            //echo'<pre>';print_r($user);echo'</pre>';
-            
             return $user;
         } catch (Exception $e) {
             throw new Exception("DB error caused by login of user with email: " . $email);
         }
     }
+    
+    /**
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
+    public static function getRoles($id)
+    {
+        try {
+            $db = Db::getInstance();
+            
+            $req = $db->prepare('SELECT role.role
+                                          FROM user_role
+                                          LEFT JOIN role ON user_role.roleId = role.id
+                                          WHERE user_role.userId = :id
+                                          AND user_role.roleId = 1
+                                          ');
+            
+            $req->execute(array('id' => $id));
+            $owner = $req->fetch();
+    
+            $req = $db->prepare('SELECT role.role
+                                          FROM user_role
+                                          LEFT JOIN role ON user_role.roleId = role.id
+                                          WHERE user_role.userId = :id
+                                          AND user_role.roleId = 2
+                                          ');
+    
+            $req->execute(array('id' => $id));
+            $renter = $req->fetch();
+            
+            return [$owner['role'], $renter['role']];
+        } catch (Exception $e) {
+            throw new Exception("DB error caused when getting roles of user with id: " . $id);
+        }
+    }
+
     
     /**
      * @param int $userId
@@ -133,8 +166,7 @@ class User
     {
         try {
             $db = Db::getInstance();
-            // we make sure $id is an integer
-            $id = intval($userId);
+ 
             $req = $db->prepare('SELECT name,phoneNumber FROM user WHERE id = :id');
             // the query was prepared, now we replace :id with our actual $id value
             $req->execute(array('id' => (int)$userId));

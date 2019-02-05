@@ -11,6 +11,7 @@ function call($controller, $action){
             break;
         case 'bikes':
             require_once('models/bike.php');
+            require_once('models/address.php');
             $controller = new BikesController();
             break;
         case 'users':
@@ -19,6 +20,9 @@ function call($controller, $action){
             break;
         case 'bookings':
             require_once('models/booking.php');
+            require_once('models/bike.php');
+            require_once('models/address.php');
+            require_once('models/user.php');
             $controller = new BookingsController();
             break;
     }
@@ -30,9 +34,9 @@ function call($controller, $action){
 // a list of the controllers and their actions
 // we consider those "allowed" values
 $controllers = array('pages' => ['home', 'error'],
-                     'bikes' => ['index', 'registerBikeForm', 'register', 'book', 'myBikes', 'getBike', 'selectTime'],
+                     'bikes' => ['index', 'registerBikeForm', 'register', 'myBikes', 'getBike', 'selectTime'],
                      'users' => ['createUserForm', 'create', 'loginPage', 'login', 'logout'],
-                     'bookings' => ['index']
+                     'bookings' => ['index', 'book']
     );
 
 // check that the requested controller and action are both allowed

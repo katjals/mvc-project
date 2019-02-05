@@ -13,22 +13,28 @@ class Booking {
     public $endTime;
     
     /**
-     * Bike title
      * @var string
      */
-    public $title;
+    public $bikeTitle;
+    
+    /**
+     * @var int
+     */
+    public $bikeId;
     
     /**
      * Booking constructor.
      * @param string $startTime
      * @param string $endTime
-     * @param string $title
+     * @param string|null $bikeTitle
+     * @param int|null $bikeId
      */
-    public function __construct($startTime, $endTime, $title)
+    public function __construct($startTime, $endTime, $bikeTitle = null, $bikeId = null)
     {
         $this->endTime = $endTime;
         $this->startTime = $startTime;
-        $this->title = $title;
+        $this->bikeTitle = $bikeTitle;
+        $this->bikeId = $bikeId;
     }
     
     /**
@@ -58,6 +64,30 @@ class Booking {
         } catch (Exception $e){
             throw new Exception("DB error when fetching all bookings");
         }
-        
+    }
+    
+    /**
+     * @param Booking $booking
+     * @return bool
+     * @throws Exception
+     */
+    public static function book($booking)
+    {
+        try {
+            $db = Db::getInstance();
+            $req = $db->prepare('INSERT INTO booking(startTime, endTime, userId, bikeId)
+                                      VALUES(:startTime, :endTime, :userId, :bikeId)');
+            $req->execute([
+                'startTime' => (new DateTime($booking->startTime))->format('Y-m-d H:i'),
+                'endTime' => (new DateTime($booking->endTime))->format('Y-m-d H:i'),
+                'userId' => $_SESSION['id'],
+                'bikeId' => $booking->bikeId
+            ]);
+            
+            return true;
+            
+        } catch (Exception $e){
+            throw new Exception("DB error when creating new bike");
+        }
     }
 }

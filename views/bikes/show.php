@@ -19,7 +19,7 @@
     <br>
     <hr>
   
-    <form method="post" action="?controller=bikes&action=book">
+    <form method="post" action="?controller=bookings&action=book">
 
       <input type="hidden" name="endDate" value="<?php echo $endDate; ?>">
      

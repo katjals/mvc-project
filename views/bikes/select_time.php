@@ -10,7 +10,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
 
 <div class="container">
-    <h1>Vælg tidsrum du ønsker at leje cykel</h1>
+    
+    <?php
+    if (!isset($locations)) { ?>
+      <h1>Vælg tidsrum du ønsker at leje cykel</h1>
+        <?php
+    } else { $_POST['dates']?>
+        <h1>Cykler, som er ledige i det valgte tidsrum</h1>
+  
+      <hr>
+      
+    <div id="map"></div>
+    
+    <?php }?>
     <hr>
     
     <form method="post" action="?controller=bikes&action=index">
@@ -24,17 +36,6 @@
         
         <button type="submit" name="bikeId" class="registerbtn">Find cykler</button>
     </form>
-    
-    <?php
-    if (isset($xmlFile)) { ?>
-        <hr>
-        
-        <h1>Cykler, som er ledige i det valgte tidsrum</h1>
-        
-        <div id="map"></div>
-    
-    <?php }?>
-
 
 </div>
 
@@ -51,25 +52,30 @@
     minuteIncrement: 30
   });
   
-  function initMap() {
+  function getData() {
+    <?php if (isset($locations)){ ?>
+        var data = <?php echo json_encode($locations) ?>;
+        initMap(data);
+   <?php } ?>
+   
+  }
+  
+  function initMap(data) {
     var map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 56.16, lng: 10.45},
-      zoom: 7,
+      zoom: 6.5,
       mapTypeId: 'terrain'
     });
     var infoWindow = new google.maps.InfoWindow;
     
-    downloadUrl('markers.xml', function(data) {
-      var xml = data.responseXML;
-      var markers = xml.documentElement.getElementsByTagName('marker');
-      Array.prototype.forEach.call(markers, function (markerElem) {
-        var id = markerElem.getAttribute('id');
-        var title = markerElem.getAttribute('title');
-        var description = markerElem.getAttribute('description');
-        var price = markerElem.getAttribute('price');
+      Array.prototype.forEach.call(data, function (markerElem) {
+        var id = markerElem['id'];
+        var title = markerElem['title'];
+        var description = markerElem['description'];
+        var price = markerElem['price'];
         var point = new google.maps.LatLng(
-          parseFloat(markerElem.getAttribute('lat')),
-          parseFloat(markerElem.getAttribute('lng')));
+          parseFloat(markerElem['address']['lat']),
+          parseFloat(markerElem['address']['lon']));
         
         var contentString = '<div id="content">'+
           '<div id="siteNotice">'+
@@ -93,29 +99,11 @@
           infoWindow.open(map, marker);
         });
       });
-    });
   }
   
-  function downloadUrl(url,callback) {
-    var request = window.ActiveXObject ?
-      new ActiveXObject('Microsoft.XMLHTTP') :
-      new XMLHttpRequest;
-    
-    request.onreadystatechange = function() {
-      if (request.readyState == 4) {
-        request.onreadystatechange = doNothing;
-        callback(request, request.status);
-      }
-    };
-    
-    request.open('GET', url, true);
-    request.send(null);
-  }
-  
-  function doNothing() {}
 
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=&callback=getData"
         async defer></script>
 
 </body>
