@@ -46,10 +46,13 @@ class Bike {
     /**
      * @param string $startDate
      * @param string $endDate
+     * @param int $lat
+     * @param int $lon
+     * @param int $radius
      * @return array
      * @throws Exception
      */
-    public static function getAllNonBooked($startDate, $endDate)
+    public static function getAllNonBooked($startDate, $endDate, $lat, $lon, $radius)
     {
         try {
             $db = Db::getInstance();
@@ -63,10 +66,17 @@ class Bike {
                                           OR (:endDate BETWEEN booking.startTime AND booking.endTime)
                                           OR (booking.startTime >= :startDate AND booking.endTime <= :endDate)
                                           )
+                                          AND (
+                                          ACOS( SIN( RADIANS( address.latitude ) ) * SIN( RADIANS( :lat ) ) + COS( RADIANS( address.latitude ) )
+                                            * COS( RADIANS( :lat )) * COS( RADIANS( address.longitude ) - RADIANS( :lon )) ) * 6380 < :radius
+                                            )
                                           ');
             $req->execute(array(
                 'startDate' => (new DateTime($startDate))->format('Y-m-d H:i'),
-                'endDate' => (new DateTime($endDate))->format('Y-m-d H:i')));
+                'endDate' => (new DateTime($endDate))->format('Y-m-d H:i'),
+                'lat' => $lat,
+                'lon' => $lon,
+                'radius' => $radius));
             $results = $req->fetchAll();
     
             $bikes = [];
@@ -117,12 +127,14 @@ class Bike {
     
         try {
             $db = Db::getInstance();
-            $req = $db->prepare('SELECT * FROM bike WHERE userId = :userId');
+            $req = $db->prepare('SELECT *
+                                          FROM bike
+                                          WHERE userId = :userId');
             $req->execute(array('userId' => $_SESSION['id']));
             
             // we create a list of Bike objects from the db result
             foreach($req->fetchAll() as $bike){
-                $bikes[] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['id']);
+                $bikes[$bike['id']] = new Bike($bike['title'], $bike['description'], $bike['price'], $bike['id']);
             }
         
             return $bikes;
@@ -142,7 +154,7 @@ class Bike {
             $db = Db::getInstance();
     
             $req = $db->prepare('INSERT INTO bike(title, description, price, addressId, userId)
-                                      VALUES(:title, :description, :price, :addressId, :userId)');
+                                          VALUES(:title, :description, :price, :addressId, :userId)');
             $req->execute(array(
                 'title' => $bike->title,
                 'description' => $bike->description,
@@ -158,17 +170,29 @@ class Bike {
     
     /**
      * @param Bike $bike
+     * @return int $addressId
      * @throws Exception
      */
     public static function update($bike)
     {
         try {
             $db = Db::getInstance();
-    
-            //TODO: set values outside query
-            $req = $db->prepare("UPDATE bike SET title = '$bike->title', description = '$bike->description', price = '$bike->price'
-                                     WHERE id = '$bike->id'");
+            
+            $req = $db->prepare("UPDATE bike
+                                          SET title = :title, description = :description, price = :price
+                                          WHERE id = :id");
+            $req->bindParam(':title', $bike->title);
+            $req->bindParam(':description', $bike->description);
+            $req->bindParam(':price', $bike->price);
+            $req->bindParam(':id', $bike->id);
             $req->execute();
+    
+            $req = $db->prepare("SELECT addressId
+                                          FROM bike
+                                          WHERE id = :id");
+            $req->bindParam(':id', $bike->id);
+            $req->execute();
+            return $req->fetch()[0];
     
         } catch (Exception $e){
             throw new Exception("DB error when editing bike with id " . $bike->id);
@@ -186,7 +210,9 @@ class Bike {
         try {
             $db = Db::getInstance();
             $id = intval($bikeId);
-            $req = $db->prepare('SELECT * FROM bike WHERE id = :id');
+            $req = $db->prepare('SELECT *
+                                          FROM bike
+                                          WHERE id = :id');
             $req->execute(array('id' => $id));
             $bike = $req->fetch();
             

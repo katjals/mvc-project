@@ -1,6 +1,6 @@
 <?php
 
-function call($controller, $action){
+function call($controller, $action, $param = null){
     // require the file that matches the controller name
     require_once('controllers/' . $controller . '_controller.php');
     
@@ -28,12 +28,12 @@ function call($controller, $action){
     }
     
     // call the action
-    $controller->{$action}();
+    $controller->{$action}($param);
 }
 
 // a list of the controllers and their actions
 // we consider those "allowed" values
-$controllers = array('pages' => ['home', 'error'],
+$controllers = array('pages' => ['home', 'error', 'success'],
                      'bikes' => ['index', 'registerBikeForm', 'register', 'myBikes', 'getBike', 'selectTime'],
                      'users' => ['createUserForm', 'create', 'loginPage', 'login', 'logout'],
                      'bookings' => ['index', 'book']

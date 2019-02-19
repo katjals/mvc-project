@@ -6,17 +6,20 @@ class BikesController {
     {
         GenericCode::checkUserPermission(['renter']);
     
-        if (!isset($_POST['dates'])){
-            require_once(dirname(__DIR__).'/views/pages/error.php');
+        if (empty($_POST['dates'] || empty($_POST['lat']) || empty($_POST['lon']))){
+            call('pages', 'error');
     
         } else {
             $separatedDates = explode(" to ",$_POST['dates']);
             $_SESSION['startDate'] = $separatedDates[0];
             $_SESSION['endDate'] = $separatedDates[1];
+            $lat = GenericCode::stripHtmlCharacters($_POST["lat"]);
+            $lon = GenericCode::stripHtmlCharacters($_POST["lon"]);
+            $radius = GenericCode::stripHtmlCharacters($_POST["radius"]);
     
-            $locations = Bike::getAllNonBooked($_SESSION['startDate'], $_SESSION['endDate']);
+            $locations = Bike::getAllNonBooked($_SESSION['startDate'], $_SESSION['endDate'], $lat, $lon, $radius);
             
-            require_once(dirname(__DIR__).'/views/bikes/select_time.php');
+            require_once(dirname(__DIR__).'/views/bikes/results.php');
         }
     }
     
@@ -37,12 +40,14 @@ class BikesController {
             $price = GenericCode::stripHtmlCharacters($_POST["price"]);
     
             if (isset($_POST['id'])){
-                $bike = new Bike($title, $description, $price, $_POST['id']);
-                Bike::update($bike);
+                $bikeId = GenericCode::stripHtmlCharacters($_POST['id']);
+                $this->ensureBikeBelongsToUser($bikeId);
+                $bike = new Bike($title, $description, $price, $bikeId);
+                $addressId = Bike::update($bike);
                 
                 if(!empty($_POST['lat']) || !empty($_POST['lon'])){
                     $address = $this->stripHtmlAddress();
-                    Address::update($address);
+                    Address::update($address, $addressId);
                 }
            
             } elseif (!empty($_POST['lat']) || !empty($_POST['lon'])) {
@@ -55,14 +60,13 @@ class BikesController {
                 Bike::register($bike);
                 
             } else {
-                require_once(dirname(__DIR__).'/views/pages/error.php');
+                call('pages', 'error');
             }
     
-            $name = $title;
-            require_once(dirname(__DIR__).'/views/pages/success.php');
+            call('pages', 'success', $title);
             
         } else {
-            require_once(dirname(__DIR__).'/views/pages/error.php');
+            call('pages', 'error');
         }
     }
     
@@ -80,14 +84,20 @@ class BikesController {
         $lon = GenericCode::stripHtmlCharacters($_POST["lon"]);
     
         $street = $streetName . " " . $streetNumber;
-        if (!empty($_POST['addressId'])){
-            $address = new Address($postalCode, $city, $street, $country, $lat, $lon, $_POST['addressId']);
-    
-        } else {
-            $address = new Address($postalCode, $city, $street, $country, $lat, $lon);
-        }
         
-        return $address;
+        return new Address($postalCode, $city, $street, $country, $lat, $lon);
+    }
+    
+    /**
+     * @param int $bikeId
+     */
+    private function ensureBikeBelongsToUser($bikeId)
+    {
+        $bikes = Bike::getOwnBikes();
+        
+        if (!isset($bikes[$bikeId])) {
+            call('pages', 'error');
+        }
     }
     
     public function myBikes()
@@ -111,7 +121,7 @@ class BikesController {
         GenericCode::checkUserPermission(['owner', 'renter']);
 
         if (empty($_GET['id']) || empty($_GET['page'])){
-            require_once(dirname(__DIR__).'/views/pages/error.php');
+            call('pages', 'error');
             
         } else {
             $bike = Bike::getOne($_GET['id']);
@@ -128,35 +138,10 @@ class BikesController {
                 require_once(dirname(__DIR__).'/views/bikes/show.php');
     
             } else {
-                require_once(dirname(__DIR__).'/views/pages/error.php');
+                call('pages', 'error');
     
             }
         }
     }
-    
-//    /**
-//     * @return string
-//     */
-//    private function getPostalCodeOfUser(){
-//        return file_get_contents('https://ipapi.co/postal/', false);
-//    }
-//
-//    /**
-//     * @param Bike[]
-//     * @return Bike[]
-//     */
-//    private function sortByUserPostalCode($bikes){
-//        usort($bikes, function($a, $b){
-//            $postalCode = $this->getPostalCodeOfUser();
-//            if ($a->postalCode == $b->postalCode){
-//                return 0;
-//            } elseif (abs($postalCode - $a->postalCode) > abs($postalCode - $b->postalCode)){
-//                return 1;
-//            } else {
-//                return -1;
-//            }
-//        });
-//        return $bikes;
-//    }
     
 }

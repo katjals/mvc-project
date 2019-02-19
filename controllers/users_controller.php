@@ -16,9 +16,10 @@ class UsersController {
     {
         if (!isset($_POST['name']) || !isset($_POST['password']) || !isset($_POST['phoneNumber'])
             || !isset($_POST['email']) || !isset($_POST['roles'])){
-            require_once(dirname(__DIR__).'/views/pages/error.php');
+            call('pages', 'error');
         
         } else {
+            //TODO hash password
             $name = GenericCode::stripHtmlCharacters($_POST["name"]);
             $phoneNumber = GenericCode::stripHtmlCharacters($_POST["phoneNumber"]);
             $email = GenericCode::stripHtmlCharacters($_POST["email"]);
@@ -32,7 +33,7 @@ class UsersController {
                 self::createSession($name, $userId, $_POST['roles']);
                 
             } else {
-                require_once(dirname(__DIR__).'/views/pages/error.php');
+                call('pages', 'error');
             }
         }
     }
@@ -52,10 +53,16 @@ class UsersController {
                     self::createSession($user['name'], $user['id'], $roles);
         
                 } else {
-                    require_once(dirname(__DIR__) . '/views/pages/error.php');
+                    call('pages', 'error');
                 }
             }
         }
+    }
+    
+    //TODO create
+    private function ensureNonExistingEmailAddress()
+    {
+    
     }
     
     /**

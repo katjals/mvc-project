@@ -16,7 +16,7 @@ class BookingsController {
         GenericCode::checkUserPermission(['renter']);
         
         if (!isset($_POST['bikeId']) || !isset($_POST['endDate']) || !isset($_POST['startDate'])){
-            require_once(dirname(__DIR__).'/views/pages/error.php');
+            call('pages', 'error');
             
         } else {
             $booking = new Booking($_POST['startDate'], $_POST['endDate'], null, $_POST['bikeId']);
@@ -27,7 +27,7 @@ class BookingsController {
                 $address = Address::getBikeAddress($_POST['bikeId']);
                 require_once(dirname(__DIR__).'/views/bikes/booking.php');
             } else {
-                require_once(dirname(__DIR__).'/views/pages/error.php');
+                call('pages', 'error');
             }
         }
     }

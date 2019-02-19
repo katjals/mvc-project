@@ -53,14 +53,16 @@ class User
             $db = Db::getInstance();
             
             $req = $db->prepare('INSERT INTO user(name, password, phoneNumber, email)
-                                      VALUES(:name, :password, :phoneNumber, :email)');
+                                          VALUES(:name, :password, :phoneNumber, :email)');
             $req->execute(array(
                 'name' => $name,
                 'password' => $password,
                 'phoneNumber' => $phoneNumber,
-                'email' => $email));
+                'email' => $email
+            ));
     
-            $req = $db->prepare('SELECT LAST_INSERT_ID() FROM user');
+            $req = $db->prepare('SELECT LAST_INSERT_ID()
+                                          FROM user');
             $req->execute();
             $userId = $req->fetch()[0];
             
@@ -82,14 +84,18 @@ class User
             $db = Db::getInstance();
     
             foreach ($roles as $role){
-                $req = $db->prepare('SELECT id FROM role WHERE role = :role');
+                $req = $db->prepare('SELECT id
+                                              FROM role
+                                              WHERE role = :role');
                 $req->execute(array('role' => $role));
                 $roleId = $req->fetch()[0];
     
-                $req = $db->prepare('INSERT INTO user_role(userId, roleId) VALUES(:userId, :roleId)');
+                $req = $db->prepare('INSERT INTO user_role(userId, roleId)
+                                              VALUES(:userId, :roleId)');
                 $req->execute(array(
                     'roleId' => $roleId,
-                    'userId' => $userId));
+                    'userId' => $userId
+                ));
             }
         } catch (Exception $e) {
             throw new Exception("Db error on setting roles");
@@ -167,9 +173,11 @@ class User
         try {
             $db = Db::getInstance();
  
-            $req = $db->prepare('SELECT name,phoneNumber FROM user WHERE id = :id');
+            $req = $db->prepare('SELECT name,phoneNumber
+                                          FROM user
+                                          WHERE id = :id');
             // the query was prepared, now we replace :id with our actual $id value
-            $req->execute(array('id' => (int)$userId));
+            $req->execute(array('id' => $userId));
             $user = $req->fetch();
             
             return new User($user['name'], $user['phoneNumber']);

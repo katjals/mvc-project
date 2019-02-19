@@ -73,7 +73,7 @@ class Address
                                           JOIN address ON bike.addressId = address.id
                                           WHERE bike.id = :id');
             // the query was prepared, now we replace :id with our actual $id value
-            $req->execute(array('id' => (int)$bikeId));
+            $req->execute(array('id' => $bikeId));
             $address = $req->fetch();
             
             return new Address($address['postalCode'], $address['city'], $address['street'], $address['country'], null, null, $address['id']);
@@ -94,14 +94,14 @@ class Address
             $db = Db::getInstance();
             
             $req = $db->prepare('INSERT INTO address(postalCode, city, street, latitude, longitude, country)
-                                      VALUES(:postalCode, :city, :street, :latitude, :longitude, :country)');
+                                          VALUES(:postalCode, :city, :street, :latitude, :longitude, :country)');
             $req->execute(array(
                 'postalCode' => $address->postalCode,
                 'city' => $address->city,
                 'street' => $address->street,
                 'country' => $address->country,
                 'latitude' => $address->lat,
-                'longitude' => $address->lon,
+                'longitude' => $address->lon
             ));
             
             $req = $db->prepare('SELECT LAST_INSERT_ID() FROM address');
@@ -115,24 +115,29 @@ class Address
     
     /**
      * @param Address $address
+     * @param int $addressId
      * @return int
      * @throws Exception
      */
-    public static function update($address)
+    public static function update($address, $addressId)
     {
         try {
             $db = Db::getInstance();
     
-            //TODO: set values outside query
             $req = $db->prepare("UPDATE address
-                                          SET postalCode = '$address->postalCode ', city = '$address->city',
-                                          street = '$address->street', latitude = '$address->lat',
-                                          longitude = '$address->lon', country = '$address->country'
-                                     WHERE id = '$address->id'");
+                                          SET postalCode = :postalCode, city = :city, street = :street, latitude = :lat, longitude = :lon, country = :country
+                                          WHERE id = :id");
+            $req->bindParam(':postalCode', $address->postalCode);
+            $req->bindParam(':city', $address->city);
+            $req->bindParam(':street', $address->street);
+            $req->bindParam(':lat', $address->lat);
+            $req->bindParam(':lon', $address->lon);
+            $req->bindParam(':country', $address->country);
+            $req->bindParam(':id', $addressId);
             $req->execute();
             
         } catch (Exception $e){
-            throw new Exception("DB error when updating address with id" . $address->id);
+            throw new Exception("DB error when updating address with id " . $addressId);
         }
     }
 }

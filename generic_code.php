@@ -21,11 +21,6 @@ class GenericCode {
         return $string;
     }
     
-    // TODO
-    public static function stripSql()
-    {
-    }
-    
     /**
      * @param string[] $roles
      * @param bool $returnBool
@@ -34,11 +29,11 @@ class GenericCode {
     public static function checkUserPermission($roles, $returnBool = false)
     {
         if (!isset($_SESSION['roles'])){
-            require_once('views/pages/error.php');
+            call('pages', 'error');
             exit();
         }
         if (empty(array_intersect($roles, $_SESSION['roles'])) && $returnBool == false){
-            require_once('views/pages/error.php');
+            call('pages', 'error');
             exit();
         } elseif (empty(array_intersect($roles, $_SESSION['roles'])) && $returnBool == true){
             return false;

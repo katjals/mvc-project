@@ -1,45 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">
+      <meta name="viewport" content="initial-scale=1.0">
+      <meta charset="utf-8">
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
 
-<div class="container">
-    
-    <?php
-    if (!isset($locations)) { ?>
-      <h1>Vælg tidsrum du ønsker at leje cykel</h1>
-        <?php
-    } else { $_POST['dates']?>
-        <h1>Cykler, som er ledige i det valgte tidsrum</h1>
+  <form method="post" action="?controller=bikes&action=index">
+    <div class="container">
+      <h1>Vælg tidsrum og område du ønsker at leje en cykel</h1>
+      <hr>
+  
+      <label for="dates"><b>Tidsrum</b></label>
+      <input
+        type="text"
+        id="basicDate"
+        name="dates"
+        placeholder=""
+        data-input required>
+      
+      <input type="hidden" placeholder="" name="title" required>
+      <input type="hidden" placeholder="" name="description" required>
+      <input type="hidden" placeholder="" name="price" required>
+      
+      <label for="postalCode"><b>Område</b></label>
+      <input id="autocomplete" placeholder=""
+             onFocus="geolocate()" type="text" required>
+      
+      <input type="hidden" id="street_number" name="streetNumber">
+      <input type="hidden" id="route" name="streetName">
+      <input type="hidden" id="locality" name="city">
+      <input type="hidden" id="postal_code" name="postalCode">
+      <input type="hidden" id="country" name="country">
+      <input type="hidden" id="lat" name="lat" required>
+      <input type="hidden" id="lon" name="lon" required>
+  
+      <label for="radius"><b>Søgeradius i km</b></label>
+      <input type="number" placeholder="" name="radius" value="10" required>
+  
   
       <hr>
-      
-    <div id="map"></div>
-    
-    <?php }?>
-    <hr>
-    
-    <form method="post" action="?controller=bikes&action=index">
-        <label for="dates"><b>Tidsrum</b></label>
-        <input
-            type="text"
-            id="basicDate"
-            name="dates"
-            placeholder="Vælg tidsrum"
-            data-input>
-        
-        <button type="submit" name="bikeId" class="registerbtn">Find cykler</button>
-    </form>
+      <button type="submit" name="submit" class="registerbtn" >Find</button>
+    </div>
+  </form>
 
-</div>
+
 
 <script>
+  
+  // timepicker
   
   $("#basicDate").flatpickr({
     mode: "range",
@@ -52,59 +64,70 @@
     minuteIncrement: 30
   });
   
-  function getData() {
-    <?php if (isset($locations)){ ?>
-        var data = <?php echo json_encode($locations) ?>;
-        initMap(data);
-   <?php } ?>
-   
-  }
+  var placeSearch, autocomplete;
+  var componentForm = {
+    street_number: 'short_name',
+    route: 'long_name',
+    locality: 'long_name',
+    country: 'long_name',
+    postal_code: 'short_name'
+  };
   
-  function initMap(data) {
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 56.16, lng: 10.45},
-      zoom: 6.5,
-      mapTypeId: 'terrain'
-    });
-    var infoWindow = new google.maps.InfoWindow;
+  function initAutocomplete() {
+    // Create the autocomplete object, restricting the search to geographical
+    // location types.
+    autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+      {types: ['geocode']});
     
-      Array.prototype.forEach.call(data, function (markerElem) {
-        var id = markerElem['id'];
-        var title = markerElem['title'];
-        var description = markerElem['description'];
-        var price = markerElem['price'];
-        var point = new google.maps.LatLng(
-          parseFloat(markerElem['address']['lat']),
-          parseFloat(markerElem['address']['lon']));
-        
-        var contentString = '<div id="content">'+
-          '<div id="siteNotice">'+
-          '</div>'+
-          '<h3>' + title +'</h3>'+
-          '<p>' + description + '</p>'+
-          '<p>' + price +' kr pr. time</p>'+
-          '<p> <a href="?controller=bikes&action=getBike&page=book&id=' + id + '">'+
-          'Læs mere</a></p>'+
-          '</div>'+
-          '</div>';
-  
-  
-        var marker = new google.maps.Marker({
-          map: map,
-          position: point
-        });
-        
-        marker.addListener('click', function () {
-          infoWindow.setContent(contentString);
-          infoWindow.open(map, marker);
-        });
-      });
+    // When the user selects an address from the dropdown, populate the address
+    // fields in the form.
+    autocomplete.addListener('place_changed', fillInAddress);
   }
   
+  function fillInAddress() {
+    // Get the place details from the autocomplete object.
+    var place = autocomplete.getPlace();
+    
+    for (var component in componentForm) {
+      document.getElementById(component).value = '';
+    }
+    
+    // Get each component of the address from the place details
+    // and fill the corresponding field on the form.
+    for (var i = 0; i < place.address_components.length; i++) {
+      var addressType = place.address_components[i].types[0];
+      if (componentForm[addressType]) {
+        var val = place.address_components[i][componentForm[addressType]];
+        document.getElementById(addressType).value = val;
+      }
+    }
+    
+    document.getElementById('lat').value = place.geometry.location.lat();
+    document.getElementById('lon').value = place.geometry.location.lng();
+    
+  }
+  
+  // Bias the autocomplete object to the user's geographical location,
+  // as supplied by the browser's 'navigator.geolocation' object.
+  function geolocate() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var geolocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        var circle = new google.maps.Circle({
+          center: geolocation,
+          radius: position.coords.accuracy
+        });
+        autocomplete.setBounds(circle.getBounds());
+      });
+    }
+  }
 
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=&callback=getData"
+<script src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initAutocomplete"
         async defer></script>
-
 </body>
 </html>
