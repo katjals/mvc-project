@@ -11,6 +11,7 @@
     
     <h1>Vil du booke <?php echo $bike->title; ?>?</h1>
     <hr>
+    <p><?php echo $bike->score; ?> ud af 5 stjerner</p>
     <p><?php echo $bike->description; ?></p>
     <p>Starttidspunkt: <?php echo $startDate; ?></p>
     <p>Sluttidspunkt: <?php echo $endDate; ?></p>

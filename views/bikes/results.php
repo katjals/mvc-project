@@ -41,8 +41,8 @@
       // bike information
       var id = markerElem['id'];
       var title = markerElem['title'];
-      var description = markerElem['description'];
       var price = markerElem['price'];
+      var score = markerElem['score'];
       var point = new google.maps.LatLng(
         parseFloat(markerElem['address']['lat']),
         parseFloat(markerElem['address']['lon']));
@@ -52,7 +52,7 @@
         '<div id="siteNotice">'+
         '</div>'+
         '<h3>' + title +'</h3>'+
-        '<p>' + description + '</p>'+
+        '<p>' + 'Rating: ' + score +' ud af 5</p>'+
         '<p>' + price +' kr pr. time</p>'+
         '<p> <a href="?controller=bikes&action=getBike&page=book&id=' + id + '">'+
         'Læs mere</a></p>'+

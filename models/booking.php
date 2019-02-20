@@ -5,6 +5,11 @@ class Booking {
     /**
      * @var string
      */
+    public $id;
+    
+    /**
+     * @var string
+     */
     public $startTime;
     
     /**
@@ -28,13 +33,15 @@ class Booking {
      * @param string $endTime
      * @param string|null $bikeTitle
      * @param int|null $bikeId
+     * @param int|null $id
      */
-    public function __construct($startTime, $endTime, $bikeTitle = null, $bikeId = null)
+    public function __construct($startTime, $endTime, $bikeTitle = null, $bikeId = null, $id = null)
     {
         $this->endTime = $endTime;
         $this->startTime = $startTime;
         $this->bikeTitle = $bikeTitle;
         $this->bikeId = $bikeId;
+        $this->id = $id;
     }
     
     /**
@@ -47,7 +54,7 @@ class Booking {
         
         try {
             $db = Db::getInstance();
-            $req = $db->prepare('SELECT booking.startTime, booking.endTime, bike.title
+            $req = $db->prepare('SELECT booking.startTime, booking.endTime, bike.title, booking.id
                                           FROM booking
                                           INNER JOIN bike ON booking.bikeId = bike.id
                                           WHERE booking.userId = :id');
@@ -58,7 +65,9 @@ class Booking {
                 $bookings[] = new Booking(
                     (new DateTime($result['startTime']))->format("d. M Y H:i"),
                     (new DateTime($result['endTime']))->format("d. M Y H:i"),
-                    $result['title']
+                    $result['title'],
+                    null,
+                    $result['id']
                 );
             }
             

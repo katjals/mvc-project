@@ -23,6 +23,11 @@ class Bike {
     public $price;
     
     /**
+     * @var int
+     */
+    public $score;
+    
+    /**
      * @var Address
      */
     public $address;
@@ -33,14 +38,16 @@ class Bike {
      * @param string $description
      * @param int $price
      * @param int|null $id
+     * @param int|null $score
      * @param Address|null $address
      */
-    public function __construct($title, $description, $price, $id = null, $address = null){
+    public function __construct($title, $description, $price, $id = null, $score = null, $address = null){
         $this->id = $id;
         $this->title = $title;
         $this->description = $description;
         $this->price = $price;
         $this->address = $address;
+        $this->score = $score;
     }
     
     /**
@@ -81,7 +88,7 @@ class Bike {
     
             $bikes = [];
             foreach($results as $row){
-                $bike = new Bike($row['title'], $row['description'], $row['price'], $row['id'],
+                $bike = new Bike($row['title'], $row['description'], $row['price'], $row['id'],4.3,
                     new Address(null, null, null, null, $row['latitude'], $row['longitude']));
                 //TODO use setter
                 
@@ -110,7 +117,7 @@ class Bike {
             $req->execute(array('id' => $bikeId));
             $bike = $req->fetch();
     
-            return new Bike($bike['title'], $bike['description'], $bike['price'], $bike['id'],null);
+            return new Bike($bike['title'], $bike['description'], $bike['price'], $bike['id'],4.3);
     
         } catch (Exception $e) {
             throw new Exception("DB error when finding bike with id: ".$bikeId);

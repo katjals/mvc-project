@@ -8,6 +8,16 @@ class BookingsController {
 
         $bookings = Booking::getMyBookings();
         
+        $previousBookings = [];
+        $futureBookings = [];
+        foreach ($bookings as $booking) {
+            if (strtotime($booking->endTime) < strtotime('now')) {
+                $previousBookings[] = $booking;
+            } else {
+                $futureBookings[] = $booking;
+            }
+        }
+        
         require_once(dirname(__DIR__).'/views/bookings/index.php');
     }
     
@@ -30,5 +40,11 @@ class BookingsController {
                 call('pages', 'error');
             }
         }
+    }
+    
+    //TODO make sure bikes is available
+    private function ensureBikeIsAvailable()
+    {
+    
     }
 }

@@ -25,6 +25,10 @@ function call($controller, $action, $param = null){
             require_once('models/user.php');
             $controller = new BookingsController();
             break;
+        case 'ratings':
+            require_once('models/rating.php');
+            $controller = new RatingsController();
+            break;
     }
     
     // call the action
@@ -36,8 +40,9 @@ function call($controller, $action, $param = null){
 $controllers = array('pages' => ['home', 'error', 'success'],
                      'bikes' => ['index', 'registerBikeForm', 'register', 'myBikes', 'getBike', 'selectTime'],
                      'users' => ['createUserForm', 'create', 'loginPage', 'login', 'logout'],
-                     'bookings' => ['index', 'book']
-    );
+                     'bookings' => ['index', 'book'],
+                     'ratings' => ['createRating', 'saveRating']
+);
 
 // check that the requested controller and action are both allowed
 // if someone tries to access something else he will be redirected to the error action of the page
